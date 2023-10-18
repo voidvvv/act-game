@@ -3,25 +3,15 @@ package com.mygdx.game.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.BaseResourceManager;
-import com.mygdx.game.MyGdxGame;
-import com.mygdx.game.data.ActData;
+import com.mygdx.game.data.MyBob;
 import com.mygdx.game.data.MapData;
-import com.mygdx.game.myg2d.MyLight;
-import com.mygdx.game.myg2d.MyShaderBatch;
 import com.mygdx.game.render.MyMapRender;
 import com.mygdx.game.render.TestRender;
-
-import java.util.Arrays;
 
 public class ActScreen extends BaseResourceManager implements Screen {
     SpriteBatch spriteBatch;
@@ -30,7 +20,7 @@ public class ActScreen extends BaseResourceManager implements Screen {
 
     ShapeRenderer worldCollideRender;
 
-    ActData actData;
+    MyBob myBob;
     MapData mapData;
 
     MyMapRender myMapRender;
@@ -53,9 +43,10 @@ public class ActScreen extends BaseResourceManager implements Screen {
         bobCamera = this.mainAsset.getBobCamera();
 
         myMapRender = new MyMapRender(bobCamera,game.getMainAsset(),game);
-        actData = this.game.getMainAsset().getActData();
+        myBob = this.game.getMainAsset().getActData();
         mapData = this.game.getMainAsset().getMapData();
 
+        Gdx.input.setInputProcessor(this.game.getActInputProcessor());
 //        myLight.setColor();
     }
 float t=0;
@@ -90,7 +81,7 @@ float t=0;
             worldCollideRender.begin(ShapeRenderer.ShapeType.Line);
             worldCollideRender.setColor(Color.BLUE);
             // bob box
-            worldCollideRender.rect(actData.box[0],actData.box[1],actData.box[2],actData.box[3]);
+            worldCollideRender.rect(myBob.box[0], myBob.box[1], myBob.box[2], myBob.box[3]);
 
 //            worldCollideRender.rectLine(0,0,20,20,20);
 
@@ -99,16 +90,18 @@ float t=0;
     }
 
     private void renderMap() {
-        myMapRender.render();
+//        myMapRender.render();
 //        new Texture().bind();
-
+        myMapRender.draw();
     }
     Vector3 lerpTarget = new Vector3();
 
     private void update(float delta) {
-        mapData.update(delta);
-
-        bobCamera.position.lerp(lerpTarget.set(actData.centre,0),5f*delta);
+//        mapData.update(delta);
+        myMapRender.act(delta);
+        lerpTarget.set(myBob.centre,0);
+//        bobCamera.project(lerpTarget);
+        bobCamera.position.lerp(lerpTarget,2.5f*delta);
         fixCameraPosition();
         bobCamera.update();
         spriteBatch.setProjectionMatrix(bobCamera.combined);
@@ -133,7 +126,7 @@ float t=0;
 
     @Override
     public void resize(int width, int height) {
-        bobCamera.setToOrtho(false, 125, 125);
+        bobCamera.setToOrtho(false, 200, 200);
         bobCamera.update(false);
 
     }

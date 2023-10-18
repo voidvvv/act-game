@@ -16,6 +16,8 @@ public class MyGdxGame extends Game {
 	private MainAsset mainAsset;
 	private BatchManager batchManager;
 	ActInputProcessor actInputProcessor;
+
+	DataManager dataManager;
 	public static MyGdxGame getInstance(){
 		if (game == null){
 			game = new MyGdxGame();
@@ -32,13 +34,18 @@ public class MyGdxGame extends Game {
 		setScreen(actScreen);
 	}
 
+	public DataManager getDataManager() {
+		return dataManager;
+	}
+
 	public void init(){
 		mainAsset = new MainAsset();
 		mainAsset.load();
 		actScreen = new ActScreen();
 		batchManager = new BatchManager();
 		actInputProcessor = new ActInputProcessor(mainAsset);
-		Gdx.input.setInputProcessor(actInputProcessor);
+		dataManager = new DataManager();
+//		Gdx.input.setInputProcessor(actInputProcessor);
 	}
 
 	public static MyGdxGame getGame() {

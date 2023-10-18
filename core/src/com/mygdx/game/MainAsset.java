@@ -3,7 +3,6 @@ package com.mygdx.game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,10 +15,13 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.mygdx.game.data.ActData;
+import com.mygdx.game.data.MyBob;
 import com.mygdx.game.data.MapData;
+import com.mygdx.game.render.BobRender;
 import com.mygdx.game.render.IRender;
 import com.mygdx.game.render.ObjShadowRender;
+import com.mygdx.game.render.enchantress.Skill1EffectRender;
+import com.mygdx.game.render.enchantress.Skill1Render;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,11 +37,12 @@ public class MainAsset {
 
     ShapeRenderer shapeRenderer;
 
+    Skill1Render skill1Render;
+
     MapData mapData;
 
-    ActData actData;
+    MyBob myBob;
 
-    Sprite bob;
     TmxMapLoader tmxMapLoader;
 
     TiledMap background;
@@ -47,6 +50,7 @@ public class MainAsset {
     FileHandleResolver internal;
 
     ObjShadowRender shadowRender;
+    Skill1EffectRender skill1EffectRender;
 
     Map<String, IRender<?>> renderMap;
 
@@ -55,18 +59,37 @@ public class MainAsset {
         this.assetManager = new AssetManager();
         this.spriteBatch = new SpriteBatch();
         this.bobCamera = new OrthographicCamera();
-        renderMap = new HashMap<>();
-        mapData = new MapData();
-        actData = new ActData(30,30,10,10,mapData);
+        this.shapeRenderer = new ShapeRenderer();
+//        initRenderMap();
         tmxMapLoader = new TmxMapLoader();
 //        this.bobCamera.zoom = -0.5f;
-        this.bobCamera.position.z = -1.5f;
         assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(internal = new InternalFileHandleResolver()));
         assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(internal));
-        this.shapeRenderer = new ShapeRenderer();
+        renderMap = new HashMap<>();
     }
 
+    BobRender bobRender ;
 
+    public Skill1EffectRender getSkill1EffectRender() {
+        if (skill1EffectRender == null){
+            skill1EffectRender = new Skill1EffectRender();
+        }
+        return skill1EffectRender;
+    }
+
+    public Skill1Render getSkill1Render() {
+        if (skill1Render == null){
+            skill1Render = new Skill1Render(this);
+        }
+        return skill1Render;
+    }
+
+    public BobRender getBobRender() {
+        if (bobRender == null){
+            bobRender = new BobRender(MyGdxGame.getGame(),this);
+        }
+        return bobRender;
+    }
 
     public ObjShadowRender getShadowRender(){
         return shadowRender;
@@ -97,8 +120,16 @@ public class MainAsset {
 
         background = tmxMapLoader.load(mapName);
 
-//        actData.initSkill();
-        mapData.setAct(actData);
+//        myBob.initSkill();
+
+        mapData = new MapData();
+        myBob = new MyBob(30,30,10,10,mapData);
+
+        mapData.setAct(myBob);
+
+
+//        this.bobCamera.position.z = -1.5f;
+
     }
 
     public void registRender(IRender render){
@@ -178,7 +209,7 @@ public class MainAsset {
         return bobCamera;
     }
 
-    public ActData getActData() {
-        return actData;
+    public MyBob getActData() {
+        return myBob;
     }
 }

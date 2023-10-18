@@ -1,26 +1,28 @@
 package com.mygdx.game.data.enchantress;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.data.charact.AbstractAnimation;
 import com.mygdx.game.data.AbstractSkill;
-import com.mygdx.game.data.ActData;
-import com.mygdx.game.data.MapData;
+import com.mygdx.game.data.MyBob;
 import com.mygdx.game.render.IRender;
-import com.mygdx.game.render.MyRenderer;
 import com.mygdx.game.render.enchantress.Skill1Render;
 
 public class Skill1 extends AbstractSkill {
-    public static final Logger log = new Logger("Skill1");
+    public static float MAX_DURATION = 0.5F;
+    public static float CHECK_PERCENT = 0.5f;
+    public static final Logger log = new Logger("Skill1",Logger.INFO);
     public int status = STATUS_NONE;
+
+    private Skill1Effect effect;
 
     public float time = 0;
 
     public float maxTime;
 
-    public ActData holder; // current holder
+    public AbstractAnimation holder; // current holder
 
-    public ActData trigger; // current trig, most time equals holder
+    public AbstractAnimation trigger; // current trig, most time equals holder
 
     public float width = 20;
     public float height = 20;
@@ -28,36 +30,31 @@ public class Skill1 extends AbstractSkill {
 
     public boolean endFlag = true;
 
-    MapData mapData;
-
-    Skill1Render render;
-
-    public Skill1(float maxTime, ActData holder,MapData mapData) {
+    public Skill1(float maxTime, AbstractAnimation holder) {
         this.maxTime = maxTime;
         this.holder = holder;
-        this.mapData = mapData;
-        render = new Skill1Render(MyGdxGame.game.getMainAsset());
-
+//        this.mapData = mapData;
+        effect = new Skill1Effect();
     }
 
     @Override
-    public void apply(ActData actData) {
-        if (actData.status == ActData.STATUS_ATTACK1){
+    public void apply(AbstractAnimation myBob) {
+
+        if (myBob.status == MyBob.STATUS_ATTACK1){
             return;
         }
         if (this.status == STATUS_NONE){
             // run!
-            System.out.println("skill1 ! run");
             log.info("skill1 ! run");
             time = 0f;
-            this.trigger = actData;
+            this.trigger = myBob;
             this.status = STATUS_RUNNING;
             endFlag = false;
-            actData.makeBobIdolForce();
-            actData.makeBobAttacking1(maxTime);
+            myBob.makeBobIdolForce();
+            myBob.makeBobAttacking1();
             initBox();
 
-
+            this.endFlag =false;
         }else {
             System.out.println(this.status+" == status");
             log.info(this.status+" == status");
@@ -65,8 +62,8 @@ public class Skill1 extends AbstractSkill {
     }
 
     private void initBox() {
-        this.box[0] = this.holder.box[0]+10;
-        this.box[1] = this.holder.box[1]+10;
+//        this.box[0] = this.holder.box[0]+10;
+//        this.box[1] = this.holder.box[1]+10;
         this.box[2] = width;
         this.box[3] = height;
 
@@ -74,20 +71,35 @@ public class Skill1 extends AbstractSkill {
 
     @Override
     public void update(float delta) {
-        log.info("skill1 update!");
-
+//        log.info("skill1 update!");
+        if(endFlag){
+            return;
+        }
         move(delta);
-        checkTrig();
+        checkTrig(delta);
+
         time+=delta;
         checkEnd();
     }
 
-    private void checkTrig() {
+    @Override
+    public void render() {
+        MyGdxGame.getInstance().getMainAsset().getSkill1Render().render(this);
+        effect.render();
+    }
+
+    private void checkTrig(float delta) {
         // todo check and trig attack logic
+        if (this.time>= MAX_DURATION*CHECK_PERCENT){
+            if (effect.status == Skill1Effect.Disable){
+                effect.init(this.holder);
+            }
+            effect.update(delta);
+        }
     }
 
     private void checkEnd() {
-        log.info("check end");
+//        log.info("check end");
         if (time>=maxTime || endFlag == true){
             log.info("end");
             end();
@@ -105,6 +117,7 @@ public class Skill1 extends AbstractSkill {
         time = 0f;
         endFlag = true;
         this.trigger = null;
+        effect.reset();
     }
 
     @Override
@@ -112,9 +125,5 @@ public class Skill1 extends AbstractSkill {
         return status == STATUS_RUNNING;
     }
 
-    @Override
-    public IRender getRender() {
-        return render;
-    }
 
 }

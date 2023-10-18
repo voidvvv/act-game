@@ -26,9 +26,7 @@ public class Skill1Render implements MyRenderer<Skill1> {
 
     @Override
     public void render(Skill1 skill) {
-        if (skill.status == AbstractSkill.STATUS_NONE){
-            return;
-        }
+
 //        this.shapeRenderer.setProjectionMatrix(camera.combined);
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 //        shapeRenderer.setColor(Color.CHARTREUSE);

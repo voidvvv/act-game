@@ -72,7 +72,7 @@ public class MyLight {
         this.minRange = minRange;
         this.maxRange = maxRange;
         this.color = Color.SKY.cpy();
-        this.color.a = 0.75f;
+        this.color.a = 0.45f;
         colorFloat[0] = color.r;
         colorFloat[1] = color.g;
         colorFloat[2] = color.b;

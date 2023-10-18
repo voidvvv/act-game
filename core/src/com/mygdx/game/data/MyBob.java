@@ -2,12 +2,16 @@ package com.mygdx.game.data;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Logger;
+import com.mygdx.game.FightPropData;
+import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.data.charact.AbstractAnimation;
 import com.mygdx.game.data.enchantress.Skill1;
-import com.mygdx.game.manage.Character;
+import com.mygdx.game.render.BobRender;
 
-public class ActData extends Character {
+public class MyBob extends AbstractAnimation {
+    public static final Logger log = new Logger("MyBob",Logger.INFO);
     static final float defaultVelHorizon = 50;
     static final float defaultVelDirect = 50;
 
@@ -40,12 +44,15 @@ public class ActData extends Character {
 
     //    public long directLongitudinal = 0;
 //    public long directHorizon = DIRECT_RIGHT;
-    public Vector2 directVect = new Vector2(1, 0);
+
 
 
     public int status = STATUS_IDOL;
+    private final PositionData positionData = new PositionData();
 
-    public Vector2 position = new Vector2();
+
+    private final FightPropData fightPropData = new FightPropData();
+
 
     public Vector2 centre = new Vector2();
 
@@ -55,18 +62,23 @@ public class ActData extends Character {
 
     public float stateTime = 0;
 
-    public float currentMaxSkillTime =0;
+    public float currentMaxSkillTime =0.5f;
 
     public final Array<AbstractSkill> skills = new Array<>();
 
     public final MapData mapData;
 
-    public ActData(float width, float height, float boxWidth, float boxHeight,MapData mapData) {
+    public MyBob(float width, float height, float boxWidth, float boxHeight, MapData mapData) {
         this.width = width;
         this.height = height;
         this.boxHeight = boxHeight;
         this.boxWidth = boxWidth;
         this.mapData = mapData;
+        this.bobRender = MyGdxGame.getGame().getMainAsset().getBobRender();
+
+        positionData.rectangle.x = boxWidth;
+        positionData.rectangle.y = boxHeight;
+        this.skills.add(new Skill1(Skill1.MAX_DURATION,this));
 
     }
 
@@ -79,19 +91,30 @@ public class ActData extends Character {
             vel.scl(1.0f / delta);
         }
         if (status == STATUS_ATTACK1){
-            skills.get(1).update(delta);
+            skills.get(0).update(delta);
             if (stateTime>=currentMaxSkillTime){
+                System.out.println("makeBobIdolForce");
                 makeBobIdolForce();
+
             }
         }
         stateTime += delta;
+    }
+
+    BobRender bobRender;
+    @Override
+    public void render() {
+        bobRender.render(this);
+        if (status == STATUS_ATTACK1){
+            skills.get(0).render();
+        }
     }
 
     private void updateDirection(float delta) {
         if (mod == MOD_STATUS_MOUSE && status == STATUS_RUN ){
 
 
-            if (MathUtils.isZero(position.dst(target))){
+            if (MathUtils.isZero(positionData.pos.dst(target))){
                 status = STATUS_IDOL;
             }
         }
@@ -99,10 +122,10 @@ public class ActData extends Character {
     Vector2 tmpTarget = new Vector2();
     private void move() {
         if (status == STATUS_RUN){
-            if (mod == MOD_STATUS_MOUSE && position.dst(target)<=position.dst(tmpTarget.set(position.x+vel.x,position.y+vel.y))){
-                position.set(target);
+            if (mod == MOD_STATUS_MOUSE && positionData.pos.dst(target)<=positionData.pos.dst(tmpTarget.set(positionData.pos.x+vel.x,positionData.pos.y+vel.y))){
+                positionData.pos.set(target);
             }else {
-                position.add(vel.x,vel.y);
+                positionData.pos.add(vel.x,vel.y);
             }
             reset();
         }
@@ -111,10 +134,10 @@ public class ActData extends Character {
     public void reset(){
         box[2] = boxWidth;
         box[3] = boxHeight;
-        box[0] = position.x+width/2 - boxWidth/2;
-        box[1] = position.y;
+        box[0] = positionData.pos.x+width/2 - boxWidth/2;
+        box[1] = positionData.pos.y;
 
-        centre.set(position.x+width/2,box[1]+box[3]/2);
+        centre.set(positionData.pos.x+width/2,box[1]+box[3]/2);
 
         shadowBox[0] = box[0];
         shadowBox[1] = box[1]-3;
@@ -123,15 +146,15 @@ public class ActData extends Character {
     }
 
     private void setdirect(Vector2 position, Vector2 target) {
-        directVect.x = target.x-position.x;
-        directVect.y = target.y-position.y;
-        directVect.nor();
+        this.positionData.directVect.x = target.x-position.x;
+        this.positionData.directVect.y = target.y-position.y;
+        this.positionData.directVect.nor();
     }
 
     public void resetDirect() {
         if (direct == 0) {
-            directVect.x = 0;
-            directVect.y = 0;
+            this.positionData.directVect.x = 0;
+            this.positionData.directVect.y = 0;
         }
     }
 
@@ -160,14 +183,14 @@ public class ActData extends Character {
             return;
         }
         if (now == DIRECT_DOWN) {
-            directVect.y = -1;
+            this.positionData.directVect.y = -1;
         } else if (now == DIRECT_UP) {
-            directVect.y = 1;
+            this.positionData.directVect.y = 1;
         }
         if (now == DIRECT_LEFT) {
-            directVect.x = -1;
+            this.positionData.directVect.x = -1;
         } else if (now == DIRECT_RIGHT) {
-            directVect.x = 1;
+            this.positionData.directVect.x = 1;
         }
     }
 
@@ -256,9 +279,9 @@ public class ActData extends Character {
             target.set(x,y);
             status = STATUS_RUN;
 
-            setdirect(position,localCenterToWorld(target));
-            vel.x = defaultVelHorizon*directVect.x;
-            vel.y = defaultVelDirect*directVect.y;
+            setdirect(positionData.pos,localCenterToWorld(target));
+            vel.x = defaultVelHorizon*this.positionData.directVect.x;
+            vel.y = defaultVelDirect*this.positionData.directVect.y;
         }
 
     }
@@ -292,8 +315,46 @@ public class ActData extends Character {
         skills.get(i).apply(this);
     }
 
-    public void makeBobAttacking1(float currentMaxSkillTime) {
+    @Override
+    public void makeBobAttacking1() {
         this.status = STATUS_ATTACK1;
-        this.currentMaxSkillTime = currentMaxSkillTime;
+        this.currentMaxSkillTime = Skill1.MAX_DURATION;
+    }
+
+
+    @Override
+    public PositionData pos() {
+        return positionData;
+    }
+
+    @Override
+    public FightPropData fightProp() {
+        return this.fightPropData;
+    }
+
+    @Override
+    public Vector2 direct() {
+        return this.positionData.directVect;
+    }
+
+    @Override
+    public MapData mapData() {
+        return this.mapData;
+    }
+
+    @Override
+    public int camp() {
+        return 0;
+    }
+
+    @Override
+    public void beAttacked(AbstractAnimation anim, SkillEffect skillEffect) {
+        log.info(naame() + "受到攻击进行处理");
+    }
+
+
+    @Override
+    public String naame() {
+        return "bob";
     }
 }

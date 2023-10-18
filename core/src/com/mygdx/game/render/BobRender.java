@@ -7,15 +7,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.MainAsset;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.AbstractSkill;
-import com.mygdx.game.data.ActData;
+import com.mygdx.game.data.MyBob;
+import com.mygdx.game.data.enchantress.Skill1;
 
-import java.util.List;
-
-public class BobRender implements IRender<ActData>{
+public class BobRender implements IRender<MyBob>{
     MyGdxGame myGdxGame;
     MainAsset mainAsset;
     SpriteBatch spriteBatch;
@@ -37,7 +37,6 @@ public class BobRender implements IRender<ActData>{
 
     ShaderProgram shaderProgram;
 
-    Array<ActData> actDataList;
 
     public BobRender(MyGdxGame myGdxGame, MainAsset mainAsset) {
         this.myGdxGame = myGdxGame;
@@ -45,7 +44,6 @@ public class BobRender implements IRender<ActData>{
         bobCamera = mainAsset.getBobCamera();
         spriteBatch = mainAsset.getSpriteBatch();
         shapeRenderer = new ShapeRenderer(); // debug
-        actDataList = new Array<>();
 
         shaderProgram = new ShaderProgram(Gdx.files.internal("shader/tmp.vert"),Gdx.files.internal("shader/shadow_normal.frag"));
         shadowRender = mainAsset.getShadowRender();
@@ -57,46 +55,46 @@ public class BobRender implements IRender<ActData>{
         enchantressRunRight=new Animation<TextureRegion>(0.1f,Array.with(enchantressRun[0]), Animation.PlayMode.LOOP);
         enchantressRunLeft=new Animation<TextureRegion>(0.1f,Array.with(enchantressRun[1]), Animation.PlayMode.LOOP);
 
-        enchantressAttack1Left=new Animation<TextureRegion>(0.5f/(float) enchantressAttack1[0].length,Array.with(enchantressAttack1[0]), Animation.PlayMode.LOOP);
-        enchantressAttack1Right=new Animation<TextureRegion>(0.5f/(float) enchantressAttack1[1].length,Array.with(enchantressAttack1[1]), Animation.PlayMode.LOOP);
+        enchantressAttack1Left=new Animation<TextureRegion>(Skill1.MAX_DURATION /(float) enchantressAttack1[0].length,Array.with(enchantressAttack1[0]), Animation.PlayMode.LOOP);
+        enchantressAttack1Right=new Animation<TextureRegion>(Skill1.MAX_DURATION/(float) enchantressAttack1[1].length,Array.with(enchantressAttack1[1]), Animation.PlayMode.LOOP);
 
-        mainAsset.registRender(this);
+        mainAsset.registRender("bobRender",this);
     }
 
-
-    public void renderCharacter(ActData actData){
-        fetchAnim(actData);
-        int keyFrameIndex = anim.getKeyFrameIndex(actData.stateTime);
+    Vector3 tmp = new Vector3();
+    public void renderBob(MyBob myBob){
+        fetchAnim(myBob);
+        int keyFrameIndex = anim.getKeyFrameIndex(myBob.stateTime);
         TextureRegion keyFrame = anim.getKeyFrames()[keyFrameIndex];
-        shadowRender.renderShadow(actData.shadowBox,bobCamera.combined,keyFrame);
-
+        shadowRender.renderShadow(myBob.shadowBox,bobCamera.combined,keyFrame);
+        tmp.set(myBob.pos().pos.x, myBob.pos().pos.y,0);
+//        bobCamera.project(tmp);
         spriteBatch.begin();
-
-        spriteBatch.draw(keyFrame,actData.position.x,actData.position.y,actData.width,actData.height);
+        spriteBatch.setProjectionMatrix(bobCamera.combined);
+        spriteBatch.draw(keyFrame, tmp.x, tmp.y, myBob.width, myBob.height);
         spriteBatch.end();
 
         // render shadow
 
     }
     Animation<TextureRegion> anim=null;
-    private void fetchAnim(ActData actData) {
-        if (actData.status == ActData.STATUS_IDOL){
-            if (actData.directVect.x<0){
+    protected void fetchAnim(MyBob myBob) {
+        if (myBob.status == MyBob.STATUS_IDOL){
+            if (myBob.pos().directVect.x<0){
                 anim = enchantressIdleLeft;
             }else {
                 anim = enchantressIdleRight;
             }
         }
-        if (actData.status == ActData.STATUS_RUN){
-            if (actData.directVect.x<0){
+        if (myBob.status == MyBob.STATUS_RUN){
+            if (myBob.pos().directVect.x<0){
                 anim = enchantressRunLeft;
             }else {
                 anim = enchantressRunRight;
             }
         }
-
-        if (actData.status == ActData.STATUS_ATTACK1){
-            if (actData.directVect.x<0){
+        if (myBob.status == MyBob.STATUS_ATTACK1){
+            if (myBob.pos().directVect.x<0){
                 anim = enchantressAttack1Right;
             }else {
                 anim = enchantressAttack1Left;
@@ -107,17 +105,9 @@ public class BobRender implements IRender<ActData>{
 //
     }
 
-
-    private void renderSkills(ActData actData) {
-        for (AbstractSkill skill : actData.skills) {
-            skill.getRender().render(skill);
-        }
-
-    }
-
     @Override
-    public void render(ActData actData) {
-        renderSkills(actData);
-        renderCharacter(actData);
+    public void render(MyBob myBob) {
+//        renderSkills(myBob);
+        renderBob(myBob);
     }
 }

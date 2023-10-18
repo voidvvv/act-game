@@ -24,7 +24,7 @@ public class MyShaderBatch {
 
     Color color01 = new Color(1,1,1,1);
     Color color10 = new Color(1,1,1,1);
-    Color color11 = new Color(1,1,1,1);
+    Color color11 = new Color(1,0,1,1);
     public MyShaderBatch(float width, float height) {
         coverShaderProgram = new ShaderProgram(Gdx.files.internal("shader/tmp.vert"),Gdx.files.internal("shader/cover.frag"));
 //        this.coverShaderProgram = shaderProgram;

@@ -1,19 +1,17 @@
 package com.mygdx.game.manage;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class Character {
-    public Vector2 position = new Vector2();
-    public float z;
 
+    public Vector3 position = new Vector3();
 
     public Character() {
     }
 
-    public Character(Vector2 pos, float z) {
-        this();
+    public Character(Vector3 pos) {
         this.position.set(pos);
-        this.z = z;
     }
 
 
