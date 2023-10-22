@@ -23,7 +23,6 @@ import java.util.Iterator;
 
 public class MyMapRender {
     TiledMap map;
-    OrthographicCamera camera;
 
     PerspectiveCamera perspectiveCamera;
 
@@ -45,27 +44,19 @@ public class MyMapRender {
 
 
 
-    public MyMapRender(OrthographicCamera camera, MainAsset mainAsset, MyGdxGame myGdxGame) {
+    public MyMapRender(OrthographicCamera camera, MainAsset mainAsset) {
         shapeRenderer = new ShapeRenderer();
         map = mainAsset.getBackground();
         mapData = mainAsset.getMapData();
-        acts = mapData.getActs();
+        acts = mainAsset.getCharactorManager().getActs();
         spriteBatch = mainAsset.getSpriteBatch();
-        this.camera =camera;
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
-        tiledMapRenderer.setView(camera);
+
         perspectiveCamera = new PerspectiveCamera(73f,200,200);
         myBob = mainAsset.getActData();
         dealMap(map);
 //        tmp = mainAsset.getKnightIdle()[0][0];
         initLightCover();
-//        tiledMapRenderer.getBatch().setShader();
-
-//        addListener(myBob)
-//        addActor(myBob);
-
-//        addListener(new ActInputListener(myBob));
-
     }
 
     private void initLightCover() {
@@ -86,24 +77,21 @@ public class MyMapRender {
         }
 
         MapObject obj01 = map.getLayers().get("obj01").getObjects().get(0);
-        System.out.println("obj01: "+obj01);
         RectangleMapObject tangle = (RectangleMapObject) obj01;
-        myBob.pos().pos.set(tangle.getRectangle().x,tangle.getRectangle().y);
-        myBob.reset();
+        MyGdxGame.getGame().getMainAsset().getCharactorManager().resetBob(tangle.getRectangle().x,tangle.getRectangle().y);
+
     }
 
     public void render(){
-        myLight.position[0] = mapData.lightPosition[0];
-        myLight.position[1] = mapData.lightPosition[1];
-        shapeRenderer.setProjectionMatrix(camera.combined);
+//        myLight.position[0] = mapData.lightPosition[0];
+//        myLight.position[1] = mapData.lightPosition[1];
+        OrthographicCamera bobCamera = MyGdxGame.getGame().getCameraManager().getBobCamera();
+        shapeRenderer.setProjectionMatrix(bobCamera.combined);
 
-        tiledMapRenderer.setView(camera);
+        tiledMapRenderer.setView(bobCamera);
 
         tiledMapRenderer.render();
-        perspectiveCamera.position.x = myBob.centre.x;
-        perspectiveCamera.position.y = myBob.centre.y;
 
-        perspectiveCamera.update();
         Gdx.gl.glDepthMask(true);
 
 
@@ -111,7 +99,7 @@ public class MyMapRender {
 
 //        drawOrigiPoint();
         if (mapData.mapLightFlag){
-            myShaderBatch.setProjectMetircs(camera.combined);
+            myShaderBatch.setProjectMetircs(bobCamera.combined);
             myShaderBatch.draw(myLight);
         }
 

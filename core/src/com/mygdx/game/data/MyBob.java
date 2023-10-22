@@ -8,21 +8,12 @@ import com.mygdx.game.FightPropData;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.charact.AbstractAnimation;
 import com.mygdx.game.data.enchantress.Skill1;
-import com.mygdx.game.render.BobRender;
 
 public class MyBob extends AbstractAnimation {
     public static final Logger log = new Logger("MyBob",Logger.INFO);
     static final float defaultVelHorizon = 50;
     static final float defaultVelDirect = 50;
-
-    public float[] box = new float[4]; // x,y,width,height
-
-    public float width = 2f;
-    public float height = 3f;
     public float[] shadowBox = new float[4];
-
-    float boxWidth;
-    float boxHeight;
 
     public static final int DIRECT_RIGHT = 1 << 0;
     public static final int DIRECT_LEFT = 1 << 1;
@@ -42,19 +33,12 @@ public class MyBob extends AbstractAnimation {
 
     public long direct = 0;
 
-    //    public long directLongitudinal = 0;
-//    public long directHorizon = DIRECT_RIGHT;
-
-
 
     public int status = STATUS_IDOL;
     private final PositionData positionData = new PositionData();
 
 
     private final FightPropData fightPropData = new FightPropData();
-
-
-    public Vector2 centre = new Vector2();
 
 //    public
 
@@ -66,18 +50,14 @@ public class MyBob extends AbstractAnimation {
 
     public final Array<AbstractSkill> skills = new Array<>();
 
-    public final MapData mapData;
 
-    public MyBob(float width, float height, float boxWidth, float boxHeight, MapData mapData) {
-        this.width = width;
-        this.height = height;
-        this.boxHeight = boxHeight;
-        this.boxWidth = boxWidth;
-        this.mapData = mapData;
-        this.bobRender = MyGdxGame.getGame().getMainAsset().getBobRender();
+    public MyBob(float height, float boxX, float boxY, MapData mapData) {
 
-        positionData.rectangle.x = boxWidth;
-        positionData.rectangle.y = boxHeight;
+//        this.bobRender = MyGdxGame.getGame().getMainAsset().getBobRender();
+
+        positionData.rectangle.x = boxX;
+        positionData.rectangle.y = boxY;
+        positionData.height = height;
         this.skills.add(new Skill1(Skill1.MAX_DURATION,this));
 
     }
@@ -99,12 +79,12 @@ public class MyBob extends AbstractAnimation {
             }
         }
         stateTime += delta;
+        pos().update(delta);
     }
 
-    BobRender bobRender;
     @Override
     public void render() {
-        bobRender.render(this);
+        MyGdxGame.getGame().getMainAsset().getBobRender().render(this);
         if (status == STATUS_ATTACK1){
             skills.get(0).render();
         }
@@ -132,17 +112,10 @@ public class MyBob extends AbstractAnimation {
     }
 
     public void reset(){
-        box[2] = boxWidth;
-        box[3] = boxHeight;
-        box[0] = positionData.pos.x+width/2 - boxWidth/2;
-        box[1] = positionData.pos.y;
-
-        centre.set(positionData.pos.x+width/2,box[1]+box[3]/2);
-
-        shadowBox[0] = box[0];
-        shadowBox[1] = box[1]-3;
-        shadowBox[2] = box[2];
-        shadowBox[3] = box[3];
+        shadowBox[0] = pos().pos.x-pos().rectangle.x/2;
+        shadowBox[1] = pos().pos.y-pos().rectangle.y/2;
+        shadowBox[2] = pos().rectangle.x;
+        shadowBox[3] = pos().rectangle.y;
     }
 
     private void setdirect(Vector2 position, Vector2 target) {
@@ -273,6 +246,7 @@ public class MyBob extends AbstractAnimation {
     }
 
     Vector2 target = new Vector2();
+
     public void moveTo(float x,float y){
         if (status == STATUS_IDOL || status == STATUS_RUN){
             mod = MOD_STATUS_MOUSE;
@@ -307,7 +281,7 @@ public class MyBob extends AbstractAnimation {
     }
 
     public Vector2 localCenterToWorld(Vector2 vector2){
-        vector2.x = vector2.x - width/2f;
+
         return vector2;
     }
 
@@ -333,28 +307,18 @@ public class MyBob extends AbstractAnimation {
     }
 
     @Override
-    public Vector2 direct() {
-        return this.positionData.directVect;
-    }
-
-    @Override
-    public MapData mapData() {
-        return this.mapData;
-    }
-
-    @Override
     public int camp() {
         return 0;
     }
 
     @Override
     public void beAttacked(AbstractAnimation anim, SkillEffect skillEffect) {
-        log.info(naame() + "受到攻击进行处理");
+        log.info(name() + "受到攻击进行处理");
     }
 
 
     @Override
-    public String naame() {
+    public String name() {
         return "bob";
     }
 }

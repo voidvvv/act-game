@@ -5,11 +5,15 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.BaseResourceManager;
 import com.mygdx.game.data.MyBob;
 import com.mygdx.game.data.MapData;
+import com.mygdx.game.data.charact.AbstractAnimation;
+import com.mygdx.game.manage.CameraManager;
+import com.mygdx.game.manage.CharactorManager;
 import com.mygdx.game.render.MyMapRender;
 import com.mygdx.game.render.TestRender;
 
@@ -20,32 +24,34 @@ public class ActScreen extends BaseResourceManager implements Screen {
 
     ShapeRenderer worldCollideRender;
 
-    MyBob myBob;
+    AbstractAnimation myBob;
     MapData mapData;
 
     MyMapRender myMapRender;
 
     boolean debug = true;
 
-    TestRender testRender;
-
 
     // test
 //    TestRender testRender;
-
+    CharactorManager charactorManager ;
     @Override
     public void show() {
         super.show();
-        testRender = new TestRender();
-        testRender.create();
+
         worldCollideRender = new ShapeRenderer();
         spriteBatch = this.mainAsset.getSpriteBatch();
-        bobCamera = this.mainAsset.getBobCamera();
+        CameraManager cameraManager = new CameraManager();
+        bobCamera = cameraManager.getBobCamera();
 
-        myMapRender = new MyMapRender(bobCamera,game.getMainAsset(),game);
-        myBob = this.game.getMainAsset().getActData();
+        myMapRender = game.getMainAsset().myMapRender;
+
         mapData = this.game.getMainAsset().getMapData();
-
+        charactorManager = this.game.getMainAsset().getCharactorManager();
+        charactorManager.clearAllAct();
+        charactorManager.resetBob(20,20);
+        myBob = charactorManager.getBob();
+        game.setCameraManager(cameraManager);
         Gdx.input.setInputProcessor(this.game.getActInputProcessor());
 //        myLight.setColor();
     }
@@ -57,7 +63,7 @@ float t=0;
     @Override
     public void render(float delta) {
         t+=delta;
-
+        game.getCameraManager().update(delta);
 
 //        lightingShader.setUniformf("iResolution",v3.set(2000,2000,1.0f));
         update(delta);
@@ -81,9 +87,13 @@ float t=0;
             worldCollideRender.begin(ShapeRenderer.ShapeType.Line);
             worldCollideRender.setColor(Color.BLUE);
             // bob box
-            worldCollideRender.rect(myBob.box[0], myBob.box[1], myBob.box[2], myBob.box[3]);
+            Rectangle rectangleShape = myBob.pos().getRectangleShape();
+            worldCollideRender.rect(rectangleShape.x, rectangleShape.y, rectangleShape.width,rectangleShape.height);
+            worldCollideRender.setColor(Color.YELLOW);
+            Rectangle rectangleShapeZ = myBob.pos().getRectangleShapeZ();
+            worldCollideRender.rect(rectangleShapeZ.x, rectangleShapeZ.y, rectangleShapeZ.width,rectangleShapeZ.height);
 
-//            worldCollideRender.rectLine(0,0,20,20,20);
+
 
             worldCollideRender.end();
         }
@@ -93,41 +103,23 @@ float t=0;
 //        myMapRender.render();
 //        new Texture().bind();
         myMapRender.draw();
+        charactorManager.renderCharactor();
     }
-    Vector3 lerpTarget = new Vector3();
+
 
     private void update(float delta) {
 //        mapData.update(delta);
         myMapRender.act(delta);
-        lerpTarget.set(myBob.centre,0);
-//        bobCamera.project(lerpTarget);
-        bobCamera.position.lerp(lerpTarget,2.5f*delta);
-        fixCameraPosition();
-        bobCamera.update();
-        spriteBatch.setProjectionMatrix(bobCamera.combined);
+
+//        spriteBatch.setProjectionMatrix(bobCamera.combined);
 
         worldCollideRender.setProjectionMatrix(bobCamera.combined);
     }
 
-    private void fixCameraPosition() {
-        if (bobCamera.position.x<bobCamera.viewportWidth/2){
-            bobCamera.position.x =bobCamera.viewportWidth/2;
-        }else if (bobCamera.position.x>mapData.width-bobCamera.viewportWidth/2){
-            bobCamera.position.x = mapData.width-bobCamera.viewportWidth/2;
-        }
-//        if (bobCamera.position.y)
-        if (bobCamera.position.y<bobCamera.viewportHeight/2){
-            bobCamera.position.y =bobCamera.viewportHeight/2;
-        }else if (bobCamera.position.y>mapData.height-bobCamera.viewportHeight/2){
-            bobCamera.position.y = mapData.height-bobCamera.viewportHeight/2;
-        }
-
-    }
 
     @Override
     public void resize(int width, int height) {
-        bobCamera.setToOrtho(false, 200, 200);
-        bobCamera.update(false);
+        game.getCameraManager().resize(width,height);
 
     }
 

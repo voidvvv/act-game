@@ -63,8 +63,9 @@ public class TestRender {
         // 清除屏幕并设置背景色
 //        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
 //        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        camera.position.x+=0.01f;
-        camera.position.y+=0.01f;
+        camera.position.x-=0.01f;
+        camera.position.y-=0.01f;
+
         // 更新相机
         camera.update();
 
@@ -72,13 +73,12 @@ public class TestRender {
 //        shader.begin();
 //        shader.setUniformMatrix("u_projectionViewMatrix", camera.combined);
 //        shader.end();
-
+//        modelInstance.transform.translate()
         // 开始模型批次渲染
         modelBatch.begin(camera);
-
+//        modelInstance.transform.set()
         // 设置全局着色器
 //        modelBatch.set
-
         // 渲染模型实例
         modelBatch.render(modelInstance,environment);
 

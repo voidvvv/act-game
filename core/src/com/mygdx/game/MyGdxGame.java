@@ -7,12 +7,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.input.ActInputProcessor;
+import com.mygdx.game.manage.CameraManager;
 import com.mygdx.game.screen.ActScreen;
+import com.mygdx.game.screen.BeginScreen;
 
 public class MyGdxGame extends Game {
 	public static MyGdxGame game;
 
 	private ActScreen actScreen;
+
+	private BeginScreen beginScreen;
 	private MainAsset mainAsset;
 	private BatchManager batchManager;
 	ActInputProcessor actInputProcessor;
@@ -31,7 +35,7 @@ public class MyGdxGame extends Game {
 	@Override
 	public void create () {
 		init();
-		setScreen(actScreen);
+		setScreen(beginScreen);
 	}
 
 	public DataManager getDataManager() {
@@ -40,12 +44,15 @@ public class MyGdxGame extends Game {
 
 	public void init(){
 		mainAsset = new MainAsset();
-		mainAsset.load();
+		mainAsset.init();
 		actScreen = new ActScreen();
+		beginScreen = new BeginScreen();
 		batchManager = new BatchManager();
 		actInputProcessor = new ActInputProcessor(mainAsset);
 		dataManager = new DataManager();
 //		Gdx.input.setInputProcessor(actInputProcessor);
+
+
 	}
 
 	public static MyGdxGame getGame() {
@@ -66,5 +73,17 @@ public class MyGdxGame extends Game {
 
 	public MainAsset getMainAsset() {
 		return mainAsset;
+	}
+
+	public void setGameScreen() {
+		setScreen(actScreen);
+	}
+	CameraManager cameraManager;
+	public void setCameraManager(CameraManager cameraManager) {
+		this.cameraManager = cameraManager;
+	}
+
+	public CameraManager getCameraManager() {
+		return cameraManager;
 	}
 }

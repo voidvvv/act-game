@@ -1,8 +1,10 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,14 +19,19 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mygdx.game.data.MyBob;
 import com.mygdx.game.data.MapData;
-import com.mygdx.game.render.BobRender;
-import com.mygdx.game.render.IRender;
-import com.mygdx.game.render.ObjShadowRender;
+import com.mygdx.game.manage.CharactorManager;
+import com.mygdx.game.render.*;
+import com.mygdx.game.render.character.GoblinRender;
 import com.mygdx.game.render.enchantress.Skill1EffectRender;
 import com.mygdx.game.render.enchantress.Skill1Render;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class MainAsset {
     static final String mapName = "map/test02/downtown-three.tmx";
@@ -32,8 +39,6 @@ public class MainAsset {
     SpriteBatch spriteBatch;
 
     AssetManager assetManager;
-
-    OrthographicCamera bobCamera;
 
     ShapeRenderer shapeRenderer;
 
@@ -53,19 +58,42 @@ public class MainAsset {
     Skill1EffectRender skill1EffectRender;
 
     Map<String, IRender<?>> renderMap;
+    BitmapFont bitmapFont;
+
+    TextRender textRender;
+
+    CharactorManager charactorManager;
+
+    public TextRender getTextRender() {
+        return textRender;
+    }
 
     public MainAsset() {
+        bobProperties = new Properties();
+
+    }
+
+    public CharactorManager getCharactorManager() {
+        return charactorManager;
+    }
+
+    public void init() {
+        charactorManager = new CharactorManager();
         shadowRender = new ObjShadowRender();
         this.assetManager = new AssetManager();
         this.spriteBatch = new SpriteBatch();
-        this.bobCamera = new OrthographicCamera();
         this.shapeRenderer = new ShapeRenderer();
+        textRender = new TextRender();
 //        initRenderMap();
         tmxMapLoader = new TmxMapLoader();
 //        this.bobCamera.zoom = -0.5f;
         assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(internal = new InternalFileHandleResolver()));
         assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(internal));
         renderMap = new HashMap<>();
+
+        bitmapFont = new BitmapFont();
+        textRender.init();
+        load();
     }
 
     BobRender bobRender ;
@@ -107,7 +135,21 @@ public class MainAsset {
         return assetManager;
     }
 
-    public void load(){
+    Properties bobProperties;
+
+    public Properties getBobProperties() {
+        return bobProperties;
+    }
+
+    public void load()  {
+        try {
+            FileHandle internal1 = Gdx.files.internal("props/bob.properties");
+
+            bobProperties.load(internal1.read());
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
         assetManager.load("bob.png", Texture.class);
         assetManager.load("character/Enchantress/Idle.png",Texture.class);
         assetManager.load("character/Enchantress/Run.png",Texture.class);
@@ -120,17 +162,11 @@ public class MainAsset {
 
         background = tmxMapLoader.load(mapName);
 
-//        myBob.initSkill();
-
         mapData = new MapData();
-        myBob = new MyBob(30,30,10,10,mapData);
-
-        mapData.setAct(myBob);
-
-
-//        this.bobCamera.position.z = -1.5f;
+        myMapRender = new MyMapRender(null,this);
 
     }
+    public MyMapRender myMapRender;
 
     public void registRender(IRender render){
         renderMap.put(render.getClass().getSimpleName(),render);
@@ -205,11 +241,21 @@ public class MainAsset {
         return tmxMapLoader;
     }
 
-    public OrthographicCamera getBobCamera() {
-        return bobCamera;
-    }
-
     public MyBob getActData() {
         return myBob;
     }
+
+    GoblinRender goblinRender;
+    public GoblinRender getGoblinRender() {
+        if (goblinRender == null){
+            goblinRender = new GoblinRender();
+        }
+        return goblinRender;
+    }
+
+
+    public BitmapFont getDefaultFont() {
+        return bitmapFont;
+    }
+
 }

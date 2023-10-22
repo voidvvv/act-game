@@ -7,6 +7,7 @@ import com.mygdx.game.KeyRenderUpdater;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.*;
 import com.mygdx.game.data.charact.AbstractAnimation;
+import com.mygdx.game.manage.CharactorManager;
 import com.mygdx.game.render.enchantress.Skill1EffectRender;
 
 public class Skill1Effect implements SkillEffect, KeyRenderUpdater, Pool.Poolable, NameAdaptor {
@@ -44,11 +45,19 @@ public class Skill1Effect implements SkillEffect, KeyRenderUpdater, Pool.Poolabl
         log.info("skill1 effect init");
         this.status = Skill1Effect.Enable;
         setBob(act);
-        PositionData posData = bob.pos();
-
-        this.position.pos.set(posData.pos.x-10,posData.pos.y-2);
-        this.position.rectangle.set(100,100);
+        initCheckRange();
     }
+
+    private void initCheckRange() {
+        PositionData posData = bob.pos();
+        float dx = posData.directVect.x>=0? 1f: -1f;
+
+        this.position.pos.set(posData.posCenter.x+(dx*6),posData.posCenter.y-10);
+        this.position.rectangle.set(dx*10,3);
+        this.position.height = posData.height+20;
+        this.position.directVect.set(posData.directVect);
+    }
+
 
     @Override
     public void end() {
@@ -57,27 +66,44 @@ public class Skill1Effect implements SkillEffect, KeyRenderUpdater, Pool.Poolabl
 
     @Override
     public void reset() {
+
         this.status = Skill1Effect.Disable;
-        targets.clear();
+        if (targets.isEmpty()){
+            log.info("skill miss!!");
+        }else {
+            targets.clear();
+        }
         log.info("effect reset");
     }
 
     @Override
     public void update(float delta) {
-        MapData mapData = MyGdxGame.getInstance().getMainAsset().getMapData();
-        Array<AbstractAnimation> acts = mapData.getActs();
+        CharactorManager manager = MyGdxGame.getInstance().getMainAsset().getCharactorManager();
+        Array<AbstractAnimation> acts = manager.getActs();
         for(int x=0; x<acts.size;x++){
             AbstractAnimation act = acts.get(x);
             if (checkValid(act)){
-                log.info(this.naame() + " check for " + act.naame() + " true");
+                log.info(this.name() + " check for " + act.name() + " true");
                 applyAct(act);
             }
         }
     }
 
     private boolean checkValid(AbstractAnimation act) {
+        boolean b = !targets.contains(act, false)
+                && checkEnemy(act)
+                && this.position.overlaps(act.pos());
+        afterCheck(act , b);
+        return b;
+    }
 
-        return !targets.contains(act,false) && this.position.overlaps(act.pos());
+    private boolean checkEnemy(AbstractAnimation act) {
+
+        return bob.camp() != act.camp();
+    }
+
+    private void afterCheck(AbstractAnimation act, boolean result) {
+
     }
 
     private void applyAct(AbstractAnimation act) {
@@ -99,7 +125,7 @@ public class Skill1Effect implements SkillEffect, KeyRenderUpdater, Pool.Poolabl
     }
 
     @Override
-    public String naame() {
+    public String name() {
         return "skill1";
     }
 }

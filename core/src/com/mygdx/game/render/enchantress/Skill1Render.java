@@ -21,7 +21,7 @@ public class Skill1Render implements MyRenderer<Skill1> {
 
         spriteBatch = mainAsset.getSpriteBatch();
         shapeRenderer = mainAsset.getShapRender();
-        camera = mainAsset.getBobCamera();
+//        camera = mainAsset.getBobCamera();
     }
 
     @Override

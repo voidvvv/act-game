@@ -2,8 +2,10 @@ package com.mygdx.game.input;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MainAsset;
+import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.MyBob;
 import com.mygdx.game.data.MapData;
 
@@ -59,11 +61,15 @@ public class ActInputProcessor extends InputAdapter {
     Vector3 tmp = new Vector3();
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touch down!!!!");
         tmp.set(screenX,screenY,0);
-        mainAsset.getBobCamera().unproject(tmp);
-        myBob.moveTo(tmp.x,tmp.y);
+        MyGdxGame.getGame().getCameraManager().getBobCamera().unproject(tmp);
+//        myBob.moveTo(tmp.x,tmp.y);
         return super.touchDown(screenX, screenY, pointer, button);
 
+    }
+
+    public InputProcessor replaceBob(MyBob myBob) {
+        this.myBob = myBob;
+        return this;
     }
 }

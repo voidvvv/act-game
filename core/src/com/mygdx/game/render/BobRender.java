@@ -7,22 +7,28 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Logger;
 import com.mygdx.game.MainAsset;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.AbstractSkill;
 import com.mygdx.game.data.MyBob;
+import com.mygdx.game.data.PositionData;
 import com.mygdx.game.data.enchantress.Skill1;
+import com.mygdx.game.utils.MyLocalUtil;
+
+import java.util.Properties;
 
 public class BobRender implements IRender<MyBob>{
+    public static final Logger log = new Logger("BobRender",Logger.INFO);
     MyGdxGame myGdxGame;
     MainAsset mainAsset;
     SpriteBatch spriteBatch;
 
     ShapeRenderer shapeRenderer; // debug
 
-    OrthographicCamera bobCamera;
 
     ObjShadowRender shadowRender;
 
@@ -37,13 +43,22 @@ public class BobRender implements IRender<MyBob>{
 
     ShaderProgram shaderProgram;
 
+    float widthRatio;
+    float heightRatio;
+
 
     public BobRender(MyGdxGame myGdxGame, MainAsset mainAsset) {
         this.myGdxGame = myGdxGame;
         this.mainAsset = mainAsset;
-        bobCamera = mainAsset.getBobCamera();
+
         spriteBatch = mainAsset.getSpriteBatch();
         shapeRenderer = new ShapeRenderer(); // debug
+
+        Properties bobProperties = mainAsset.getBobProperties();
+        widthRatio = MyLocalUtil.convertFloat(bobProperties.getProperty("width-ratio"));
+        // height-ratio
+        heightRatio = MyLocalUtil.convertFloat( bobProperties.getProperty("height-ratio"));
+
 
         shaderProgram = new ShaderProgram(Gdx.files.internal("shader/tmp.vert"),Gdx.files.internal("shader/shadow_normal.frag"));
         shadowRender = mainAsset.getShadowRender();
@@ -64,14 +79,18 @@ public class BobRender implements IRender<MyBob>{
     Vector3 tmp = new Vector3();
     public void renderBob(MyBob myBob){
         fetchAnim(myBob);
+        OrthographicCamera bobCamera = MyGdxGame.getGame().getCameraManager().getBobCamera();
+        PositionData pos = myBob.pos();
+        float width = pos.rectangle.x/widthRatio;
+        float height = pos.height/heightRatio;
         int keyFrameIndex = anim.getKeyFrameIndex(myBob.stateTime);
         TextureRegion keyFrame = anim.getKeyFrames()[keyFrameIndex];
         shadowRender.renderShadow(myBob.shadowBox,bobCamera.combined,keyFrame);
-        tmp.set(myBob.pos().pos.x, myBob.pos().pos.y,0);
+        tmp.set(pos.pos.x, pos.pos.y,0);
 //        bobCamera.project(tmp);
         spriteBatch.begin();
         spriteBatch.setProjectionMatrix(bobCamera.combined);
-        spriteBatch.draw(keyFrame, tmp.x, tmp.y, myBob.width, myBob.height);
+        spriteBatch.draw(keyFrame, tmp.x-width/2, tmp.y, width, height);
         spriteBatch.end();
 
         // render shadow
