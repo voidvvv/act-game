@@ -78,9 +78,4 @@ public class CharactorManager {
         return bob;
     }
 
-    public void renderCharactor() {
-        for(int x=0;x<acts.size;x++){
-            acts.get(x).render();
-        }
-    }
 }

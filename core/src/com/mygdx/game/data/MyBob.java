@@ -8,9 +8,10 @@ import com.mygdx.game.FightPropData;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.charact.AbstractAnimation;
 import com.mygdx.game.data.enchantress.Skill1;
+import com.mygdx.game.input.TouchVector;
 
 public class MyBob extends AbstractAnimation {
-    public static final Logger log = new Logger("MyBob",Logger.INFO);
+    public static final Logger log = new Logger("MyBob", Logger.INFO);
     static final float defaultVelHorizon = 50;
     static final float defaultVelDirect = 50;
     public float[] shadowBox = new float[4];
@@ -26,7 +27,6 @@ public class MyBob extends AbstractAnimation {
     public static final int STATUS_ATTACK1 = 2;
     public static final int MOD_STATUS_KEY = 0;
     public static final int MOD_STATUS_MOUSE = 1;
-
 
 
     public int mod = MOD_STATUS_KEY; // key
@@ -46,7 +46,7 @@ public class MyBob extends AbstractAnimation {
 
     public float stateTime = 0;
 
-    public float currentMaxSkillTime =0.5f;
+    public float currentMaxSkillTime = 0.5f;
 
     public final Array<AbstractSkill> skills = new Array<>();
 
@@ -58,21 +58,23 @@ public class MyBob extends AbstractAnimation {
         positionData.rectangle.x = boxX;
         positionData.rectangle.y = boxY;
         positionData.height = height;
-        this.skills.add(new Skill1(Skill1.MAX_DURATION,this));
+        this.skills.add(new Skill1(Skill1.MAX_DURATION, this));
 
     }
 
+    int button_index = -1;
 
     public void update(float delta) {
+        checkButton();
         updateDirection(delta);
-        if (status == STATUS_RUN){
+        if (status == STATUS_RUN) {
             vel.scl(delta);
             move();
             vel.scl(1.0f / delta);
         }
-        if (status == STATUS_ATTACK1){
+        if (status == STATUS_ATTACK1) {
             skills.get(0).update(delta);
-            if (stateTime>=currentMaxSkillTime){
+            if (stateTime >= currentMaxSkillTime) {
                 System.out.println("makeBobIdolForce");
                 makeBobIdolForce();
 
@@ -80,47 +82,91 @@ public class MyBob extends AbstractAnimation {
         }
         stateTime += delta;
         pos().update(delta);
+        fixBobPosition();
+    }
+
+    private void checkButton() {
+        TouchVector[] arr = MyGdxGame.getInstance().getActInputProcessor().moveTo;
+        if (button_index == -1) {
+
+            for (int x = 0; x < arr.length; x++) {
+                if (arr[x].touch || arr[x].drag) {
+                    button_index = x;
+                    target.set(arr[x].x, arr[x].y);
+                    break;
+                }
+            }
+        } else {
+            if (!arr[button_index].touch) {
+                button_index = -1;
+                return;
+            } else {
+                target.set(arr[button_index].x, arr[button_index].y);
+            }
+        }
+        if (button_index >= 0) {
+            moveTo();
+        }
+    }
+
+    private void fixBobPosition() {
+        MapData mapData = MyGdxGame.getGame().getMainAsset().getMapData();
+        float width = mapData.width;
+        float height = mapData.height;
+        if (this.pos().pos.x < this.pos().rectangle.x / 2) {
+            this.pos().pos.x = this.pos().rectangle.x / 2;
+        } else if (this.pos().pos.x > width - this.pos().rectangle.x / 2) {
+            this.pos().pos.x = width - this.pos().rectangle.x / 2;
+        }
+
+        if (this.pos().pos.y < 0) {
+            this.pos().pos.y = 0;
+        } else if (this.pos().pos.y > height - this.pos().rectangle.y) {
+            this.pos().pos.y = height - this.pos().rectangle.y;
+        }
     }
 
     @Override
     public void render() {
         MyGdxGame.getGame().getMainAsset().getBobRender().render(this);
-        if (status == STATUS_ATTACK1){
+        if (status == STATUS_ATTACK1) {
             skills.get(0).render();
         }
     }
 
     private void updateDirection(float delta) {
-        if (mod == MOD_STATUS_MOUSE && status == STATUS_RUN ){
+        if (mod == MOD_STATUS_MOUSE && status == STATUS_RUN) {
 
 
-            if (MathUtils.isZero(positionData.pos.dst(target))){
+            if (MathUtils.isZero(positionData.pos.dst(target))) {
                 status = STATUS_IDOL;
             }
         }
     }
+
     Vector2 tmpTarget = new Vector2();
+
     private void move() {
-        if (status == STATUS_RUN){
-            if (mod == MOD_STATUS_MOUSE && positionData.pos.dst(target)<=positionData.pos.dst(tmpTarget.set(positionData.pos.x+vel.x,positionData.pos.y+vel.y))){
+        if (status == STATUS_RUN) {
+            if (mod == MOD_STATUS_MOUSE && positionData.pos.dst(target) <= positionData.pos.dst(tmpTarget.set(positionData.pos.x + vel.x, positionData.pos.y + vel.y))) {
                 positionData.pos.set(target);
-            }else {
-                positionData.pos.add(vel.x,vel.y);
+            } else {
+                positionData.pos.add(vel.x, vel.y);
             }
             reset();
         }
     }
 
-    public void reset(){
-        shadowBox[0] = pos().pos.x-pos().rectangle.x/2;
-        shadowBox[1] = pos().pos.y-pos().rectangle.y/2;
+    public void reset() {
+        shadowBox[0] = pos().pos.x - pos().rectangle.x / 2;
+        shadowBox[1] = pos().pos.y - pos().rectangle.y / 2;
         shadowBox[2] = pos().rectangle.x;
         shadowBox[3] = pos().rectangle.y;
     }
 
     private void setdirect(Vector2 position, Vector2 target) {
-        this.positionData.directVect.x = target.x-position.x;
-        this.positionData.directVect.y = target.y-position.y;
+        this.positionData.directVect.x = target.x - position.x;
+        this.positionData.directVect.y = target.y - position.y;
         this.positionData.directVect.nor();
     }
 
@@ -215,7 +261,7 @@ public class MyBob extends AbstractAnimation {
     }
 
     public void makeBobRun() {
-        if (status!=STATUS_RUN){
+        if (status != STATUS_RUN) {
             status = STATUS_RUN;
             stateTime = 0;
         }
@@ -247,15 +293,15 @@ public class MyBob extends AbstractAnimation {
 
     Vector2 target = new Vector2();
 
-    public void moveTo(float x,float y){
-        if (status == STATUS_IDOL || status == STATUS_RUN){
+    public void moveTo() {
+        if (status == STATUS_IDOL || status == STATUS_RUN) {
             mod = MOD_STATUS_MOUSE;
-            target.set(x,y);
+//            target.set(x,y);
             status = STATUS_RUN;
 
-            setdirect(positionData.pos,localCenterToWorld(target));
-            vel.x = defaultVelHorizon*this.positionData.directVect.x;
-            vel.y = defaultVelDirect*this.positionData.directVect.y;
+            setdirect(positionData.pos, localCenterToWorld(target));
+            vel.x = defaultVelHorizon * this.positionData.directVect.x;
+            vel.y = defaultVelDirect * this.positionData.directVect.y;
         }
 
     }
@@ -280,7 +326,7 @@ public class MyBob extends AbstractAnimation {
         }
     }
 
-    public Vector2 localCenterToWorld(Vector2 vector2){
+    public Vector2 localCenterToWorld(Vector2 vector2) {
 
         return vector2;
     }

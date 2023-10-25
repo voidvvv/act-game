@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.*;
@@ -16,12 +17,17 @@ import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.charact.AbstractAnimation;
 import com.mygdx.game.data.MyBob;
 import com.mygdx.game.data.MapData;
+import com.mygdx.game.manage.CharactorManager;
 import com.mygdx.game.myg2d.MyLight;
 import com.mygdx.game.myg2d.MyShaderBatch;
 
 import java.util.Iterator;
 
 public class MyMapRender {
+    public static final String mapGround01 = "map/pic/back_ocean_cloud_01.png";
+    public static final String mapGround02 = "map/pic/back_ocean_cloud_02.png";
+    public static final String mapGround03 = "map/pic/back_nature_tree_01.png";;
+
     TiledMap map;
 
     PerspectiveCamera perspectiveCamera;
@@ -32,29 +38,32 @@ public class MyMapRender {
 
     ShapeRenderer shapeRenderer;
 
-    Array<AbstractAnimation> acts;
-
-    MyBob myBob;
-
     MapData mapData;
 
     // light
     MyShaderBatch myShaderBatch;
     MyLight myLight;
 
+    Texture oceanBackGround;
+    Texture oceanBackGround2;
 
+    Texture oceanBackGround3;
 
+//         assetManager.load("map/pic/back_ocean_cloud_01.png",Texture.class);
+//        assetManager.load("map/pic/back_ocean_cloud_02.png",Texture.class);
     public MyMapRender(OrthographicCamera camera, MainAsset mainAsset) {
         shapeRenderer = new ShapeRenderer();
         map = mainAsset.getBackground();
         mapData = mainAsset.getMapData();
-        acts = mainAsset.getCharactorManager().getActs();
         spriteBatch = mainAsset.getSpriteBatch();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
 
         perspectiveCamera = new PerspectiveCamera(73f,200,200);
-        myBob = mainAsset.getActData();
         dealMap(map);
+        oceanBackGround = mainAsset.getTexture(mapGround01);
+        oceanBackGround2 = mainAsset.getTexture(mapGround02);
+        oceanBackGround3 = mainAsset.getTexture(mapGround03);
+
 //        tmp = mainAsset.getKnightIdle()[0][0];
         initLightCover();
     }
@@ -86,6 +95,11 @@ public class MyMapRender {
 //        myLight.position[0] = mapData.lightPosition[0];
 //        myLight.position[1] = mapData.lightPosition[1];
         OrthographicCamera bobCamera = MyGdxGame.getGame().getCameraManager().getBobCamera();
+
+        spriteBatch.begin();
+        spriteBatch.setProjectionMatrix(bobCamera.combined);
+        spriteBatch.draw(oceanBackGround3,0f,mapData.height*0.85f,mapData.width,mapData.height);
+        spriteBatch.end();
         shapeRenderer.setProjectionMatrix(bobCamera.combined);
 
         tiledMapRenderer.setView(bobCamera);
@@ -106,6 +120,8 @@ public class MyMapRender {
     }
 
     private void drawOrigiPoint() {
+        CharactorManager charactorManager = MyGdxGame.getInstance().getMainAsset().getCharactorManager();
+        AbstractAnimation myBob = charactorManager.getBob();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.circle(myBob.pos().pos.x, myBob.pos().pos.y,3);
@@ -113,7 +129,9 @@ public class MyMapRender {
     }
 
     private void renderCharacter() {
-        for(AbstractAnimation anim:acts){
+        CharactorManager charactorManager = MyGdxGame.getInstance().getMainAsset().getCharactorManager();
+        for(int x=0; x< charactorManager.getActs().size; x++){
+            AbstractAnimation anim = charactorManager.getActs().get(x);
             anim.render();
         }
     }
@@ -142,6 +160,7 @@ public class MyMapRender {
     public void act(float delta) {
 //        myBob.update(delta);
         mapData.update(delta);
+
 
     }
 

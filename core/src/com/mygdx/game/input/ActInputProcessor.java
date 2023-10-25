@@ -15,6 +15,9 @@ public class ActInputProcessor extends InputAdapter {
 
     public MapData mapData;
 
+    public final TouchVector[] moveTo = {new TouchVector(),new TouchVector()};
+
+
     public ActInputProcessor(MainAsset mainAsset) {
         this.mainAsset = mainAsset;
         myBob = mainAsset.getActData();
@@ -23,21 +26,7 @@ public class ActInputProcessor extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.UP){
-            myBob.bobUp(true);
-        }else if (keycode == Input.Keys.DOWN){
-            myBob.bobDown(true);
-        }
-        if (keycode == Input.Keys.RIGHT){
-            myBob.bobRight(true);
-        }else if (keycode == Input.Keys.LEFT){
-            myBob.bobLeft(true);
-        };
 
-        if (keycode == Input.Keys.Q){
-            System.out.println(" key dowm ! ");
-            myBob.useSkill(0);
-        }
         if (keycode == Input.Keys.SPACE){
             mapData.mapLightFlag = !mapData.mapLightFlag;
         }
@@ -61,11 +50,44 @@ public class ActInputProcessor extends InputAdapter {
     Vector3 tmp = new Vector3();
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        tmp.set(screenX,screenY,0);
-        MyGdxGame.getGame().getCameraManager().getBobCamera().unproject(tmp);
+        if (pointer<2){
+            tmp.set(screenX,screenY,0);
+            MyGdxGame.getGame().getCameraManager().getBobCamera().unproject(tmp);
 //        myBob.moveTo(tmp.x,tmp.y);
-        return super.touchDown(screenX, screenY, pointer, button);
+            moveTo[pointer].x = tmp.x;
+            moveTo[pointer].y = tmp.y;
+            moveTo[pointer].touch = true;
+            return true;
+        }
+        return false;
 
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (pointer<2){
+            tmp.set(screenX,screenY,0);
+            MyGdxGame.getGame().getCameraManager().getBobCamera().unproject(tmp);
+            moveTo[pointer].x = tmp.x;
+            moveTo[pointer].y = tmp.y;
+            moveTo[pointer].touch = false;
+            moveTo[pointer].drag = false;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        if (pointer<2){
+            tmp.set(screenX,screenY,0);
+            MyGdxGame.getGame().getCameraManager().getBobCamera().unproject(tmp);
+            moveTo[pointer].x = tmp.x;
+            moveTo[pointer].y = tmp.y;
+            moveTo[pointer].drag = true;
+            return true;
+        }
+        return false;
     }
 
     public InputProcessor replaceBob(MyBob myBob) {

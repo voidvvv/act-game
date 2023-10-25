@@ -16,7 +16,7 @@ public class CameraManager {
     }
 
     public void resize(int width, int height) {
-        bobCamera.setToOrtho(false, width, height);
+        bobCamera.setToOrtho(false, 200, 200);
         bobCamera.update(false);
     }
 
@@ -44,9 +44,6 @@ public class CameraManager {
 //        if (bobCamera.position.y)
         if (bobCamera.position.y<bobCamera.viewportHeight/2){
             bobCamera.position.y =bobCamera.viewportHeight/2;
-        }else if (bobCamera.position.y>mapData.height-bobCamera.viewportHeight/2){
-            bobCamera.position.y = mapData.height-bobCamera.viewportHeight/2;
         }
-
     }
 }

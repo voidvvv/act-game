@@ -103,7 +103,7 @@ float t=0;
 //        myMapRender.render();
 //        new Texture().bind();
         myMapRender.draw();
-        charactorManager.renderCharactor();
+
     }
 
 

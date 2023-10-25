@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mygdx.game.data.MyBob;
@@ -158,6 +159,9 @@ public class MainAsset {
         assetManager.load("character/Enchantress/Attack_3.png",Texture.class);
         assetManager.load("character/Enchantress/Attack_4.png",Texture.class);
         assetManager.load("character/Knight/Idle.png",Texture.class);
+        assetManager.load(MyMapRender.mapGround01,Texture.class);
+        assetManager.load(MyMapRender.mapGround02,Texture.class);
+        assetManager.load(MyMapRender.mapGround03,Texture.class);
         assetManager.finishLoading();
 
         background = tmxMapLoader.load(mapName);
@@ -178,6 +182,10 @@ public class MainAsset {
 
     public TiledMap getBackground() {
         return background;
+    }
+
+    public Texture getTexture(String textureName){
+        return assetManager.get(textureName,Texture.class);
     }
 
     public TextureRegion[][] getEnchantressAttack1(){
