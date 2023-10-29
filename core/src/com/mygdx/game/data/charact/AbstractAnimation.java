@@ -1,10 +1,9 @@
 package com.mygdx.game.data.charact;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.mygdx.game.FightPropData;
 import com.mygdx.game.KeyRenderUpdater;
-import com.mygdx.game.data.MapData;
+import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.NameAdaptor;
 import com.mygdx.game.data.PositionData;
 import com.mygdx.game.data.SkillEffect;
@@ -14,6 +13,8 @@ import java.util.Comparator;
 
 public abstract class AbstractAnimation  implements KeyRenderUpdater, NameAdaptor {
     public static final Logger log = new Logger("AbstractAnimation",Logger.INFO);
+
+
 
     public int status;
 
@@ -29,20 +30,23 @@ public abstract class AbstractAnimation  implements KeyRenderUpdater, NameAdapto
         return this.fightPropData;
     };
 
+    public void reset(){
+        MyGdxGame.getInstance().getMainAsset().getCharactorManager().reset(this);
+
+    }
+
 
     public abstract int camp();
 
     public abstract void beAttacked(AbstractAnimation anim, SkillEffect skillEffect);
 
-    public abstract void makeBobIdolForce() ;
+    public abstract void makeIdolForce() ;
 
 
     public abstract void makeBobAttacking1();
 
     public void beDamaged(Skill1Effect skill1Effect, float d) {
         log.info(name()+"收到来自 "+skill1Effect.bob.name()+" 的 "+skill1Effect.name()+" 技能 " + d + "点伤害");
-        System.out.println(name()+"收到来自 "+skill1Effect.bob.name()+" 的 "+skill1Effect.name()+" 技能 " + d + "点伤害");
-        this.fightProp().hp-=d;
     }
     static AbstractAnimation.ActCompare compare;
     public static AbstractAnimation.ActCompare instance(){
@@ -50,6 +54,10 @@ public abstract class AbstractAnimation  implements KeyRenderUpdater, NameAdapto
             compare = new ActCompare();
         }
         return compare;
+    }
+
+    public boolean died() {
+        return false;
     }
 
     public static class ActCompare implements Comparator<AbstractAnimation>{

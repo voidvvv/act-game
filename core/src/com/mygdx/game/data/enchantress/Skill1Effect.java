@@ -99,7 +99,7 @@ public class Skill1Effect implements SkillEffect, KeyRenderUpdater, Pool.Poolabl
 
     private boolean checkEnemy(AbstractAnimation act) {
 
-        return bob.camp() != act.camp();
+        return bob.camp() != act.camp() && !act.died();
     }
 
     private void afterCheck(AbstractAnimation act, boolean result) {

@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.input.ActInputProcessor;
+import com.mygdx.game.input.InputStateData;
 import com.mygdx.game.manage.CameraManager;
+import com.mygdx.game.render.GameComponentRender;
 import com.mygdx.game.screen.ActScreen;
 import com.mygdx.game.screen.BeginScreen;
 
@@ -29,7 +31,9 @@ public class MyGdxGame extends Game {
 		return game;
 	}
 	private MyGdxGame() {
+		CameraManager cameraManager = new CameraManager();
 
+		setCameraManager(cameraManager);
 	}
 
 	@Override
@@ -42,7 +46,12 @@ public class MyGdxGame extends Game {
 		return dataManager;
 	}
 
+	GameComponentRender gameComponentRender;
+
+	private InputStateData inputStateData;
+
 	public void init(){
+		inputStateData = new InputStateData();
 		mainAsset = new MainAsset();
 		mainAsset.init();
 		actScreen = new ActScreen();
@@ -50,9 +59,18 @@ public class MyGdxGame extends Game {
 		batchManager = new BatchManager();
 		actInputProcessor = new ActInputProcessor(mainAsset);
 		dataManager = new DataManager();
+		gameComponentRender = new GameComponentRender();
 //		Gdx.input.setInputProcessor(actInputProcessor);
 
 
+	}
+
+	public InputStateData getInputStateData() {
+		return inputStateData;
+	}
+
+	public GameComponentRender getGameComponentRender() {
+		return gameComponentRender;
 	}
 
 	public static MyGdxGame getGame() {
@@ -85,5 +103,9 @@ public class MyGdxGame extends Game {
 
 	public CameraManager getCameraManager() {
 		return cameraManager;
+	}
+
+	public void update(float delta) {
+		getMainAsset().getCharactorManager().update(delta);
 	}
 }

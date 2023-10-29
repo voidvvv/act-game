@@ -1,0 +1,78 @@
+package com.mygdx.game.manage;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
+import com.mygdx.game.MyGdxGame;
+
+public class TextManager {
+    SpriteBatch spriteBatch;
+    OrthographicCamera screenCamera;
+    BitmapFont font;
+
+    FreeTypeFontGenerator generator;
+
+    GlyphLayout layout;
+
+    CameraManager cameraManager;
+
+    public TextManager() {
+        layout = new GlyphLayout();
+
+    }
+
+    public void init(){
+
+        this.spriteBatch = MyGdxGame.getGame().getMainAsset().getSpriteBatch();
+        screenCamera = MyGdxGame.getGame().getCameraManager().getScreenCamera();;
+//        this.font = MyGdxGame.getGame().getMainAsset().getDefaultFont();
+        cameraManager = MyGdxGame.getGame().getCameraManager();
+        generator  = new FreeTypeFontGenerator(Gdx.files.internal("font/song_01.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        param.size = 20;
+
+        param.characters = FreeTypeFontGenerator.DEFAULT_CHARS + "中文";
+        font = generator.generateFont(param);
+    }
+
+    public void render(String text, float x, float y){
+        layout.setText(font,text);
+
+        v3.x -= layout.width/2;
+        v3.y += layout.height/2;
+        screenCamera.unproject(v3.set(x,y,0));
+        font.draw(spriteBatch,layout,v3.x,v3.y);
+    }
+    Vector3 v3 = new Vector3();
+    public void render(String text, float x, float y, Camera camera){
+        layout.setText(font,text);
+        cameraManager.convertCoordinate(v3.set(x,y,0),camera,screenCamera);
+//        camera.project(v3.set(x,y,0));
+//
+//
+//        v3.y = Gdx.graphics.getHeight()-v3.y;
+//        screenCamera.unproject(v3);
+        v3.x -= layout.width/2;
+        v3.y += layout.height/2;
+        font.draw(spriteBatch,layout,v3.x,v3.y);
+    }
+
+    public void update(float delta){
+
+    }
+
+    public void begin() {
+        spriteBatch.begin();
+        spriteBatch.setProjectionMatrix(screenCamera.combined);
+    }
+
+    public void end() {
+        spriteBatch.end();
+    }
+}

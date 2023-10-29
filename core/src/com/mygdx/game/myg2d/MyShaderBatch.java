@@ -40,8 +40,7 @@ public class MyShaderBatch {
     }
 
     public void draw(MyLight myLight){
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA,GL20.GL_ONE_MINUS_SRC_ALPHA);
+        MyG2DUtil.openBlender();
         coverShaderProgram.bind();
         coverShaderProgram.setUniformMatrix("u_projTrans",matrix4);
         coverShaderProgram.setUniform4fv("coverColor",myLight.colorFloat,0,4);
@@ -51,10 +50,12 @@ public class MyShaderBatch {
         coverShaderProgram.setUniformi("lightFlag",2);
 
         mesh.render(coverShaderProgram,GL20.GL_TRIANGLES);
-        Gdx.gl.glDisable(GL20.GL_BLEND);
+        MyG2DUtil.closeBlender();
     }
 
     public void setProjectMetircs(Matrix4 combined) {
         this.matrix4.set(combined);
     }
+
+
 }

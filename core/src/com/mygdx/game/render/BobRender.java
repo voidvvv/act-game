@@ -28,8 +28,6 @@ public class BobRender implements IRender<MyBob>{
     SpriteBatch spriteBatch;
 
     ShapeRenderer shapeRenderer; // debug
-
-
     ObjShadowRender shadowRender;
 
     Animation<TextureRegion> enchantressIdleRight;
@@ -58,9 +56,7 @@ public class BobRender implements IRender<MyBob>{
         widthRatio = MyLocalUtil.convertFloat(bobProperties.getProperty("width-ratio"));
         // height-ratio
         heightRatio = MyLocalUtil.convertFloat( bobProperties.getProperty("height-ratio"));
-
-
-        shaderProgram = new ShaderProgram(Gdx.files.internal("shader/tmp.vert"),Gdx.files.internal("shader/shadow_normal.frag"));
+//        shaderProgram = new ShaderProgram(Gdx.files.internal("shader/tmp.vert"),Gdx.files.internal("shader/shadow_normal.frag"));
         shadowRender = mainAsset.getShadowRender();
         TextureRegion[][] enchantressIdle = mainAsset.getEnchantressIdle();
         TextureRegion[][] enchantressRun = mainAsset.getEnchantressRun();
@@ -77,6 +73,7 @@ public class BobRender implements IRender<MyBob>{
     }
 
     Vector3 tmp = new Vector3();
+    float[] shadow = new float[4];
     public void renderBob(MyBob myBob){
         fetchAnim(myBob);
         OrthographicCamera bobCamera = MyGdxGame.getGame().getCameraManager().getBobCamera();
@@ -85,7 +82,11 @@ public class BobRender implements IRender<MyBob>{
         float height = pos.height/heightRatio;
         int keyFrameIndex = anim.getKeyFrameIndex(myBob.stateTime);
         TextureRegion keyFrame = anim.getKeyFrames()[keyFrameIndex];
-        shadowRender.renderShadow(myBob.shadowBox,bobCamera.combined,keyFrame);
+        shadow[0] = myBob.pos().getRectangleShape().x ;
+        shadow[1] = myBob.pos().getRectangleShape().y - myBob.pos().getRectangleShape().height/2;
+        shadow[2] = myBob.pos().getRectangleShape().width;
+        shadow[3] = myBob.pos().getRectangleShape().height;
+        shadowRender.renderShadow(shadow,bobCamera.combined,keyFrame);
         tmp.set(pos.pos.x, pos.pos.y,0);
 //        bobCamera.project(tmp);
         spriteBatch.begin();

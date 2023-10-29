@@ -1,19 +1,14 @@
 package com.mygdx.game.render.enchantress;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MyGdxGame;
-import com.mygdx.game.data.PositionData;
 import com.mygdx.game.data.enchantress.Skill1Effect;
 
 public class Skill1EffectRender {
     ShapeRenderer shapeRenderer;
 
     public Skill1EffectRender() {
-        this.shapeRenderer = MyGdxGame.getGame().getMainAsset().getShapRender();
+        this.shapeRenderer = MyGdxGame.getGame().getMainAsset().getLineShapeRender();
         shapeRenderer.setAutoShapeType(true);
     }
 
@@ -21,7 +16,6 @@ public class Skill1EffectRender {
         if (s1e.status != Skill1Effect.Enable){
             return;
         }
-        PositionData position = s1e.position;
 
 //        Rectangle rectangleShape = position.getRectangleShape();
 //        Rectangle rectangleShapeZ = position.getRectangleShapeZ();

@@ -54,6 +54,8 @@ public class TmpScreen implements Screen {
 
         shaderProgram2 = new ShaderProgram(Gdx.files.internal("test.vert"), Gdx.files.internal("test2.frag"));
 
+
+
     }
     float t = 0.0f;
     Vector3 v3 = new Vector3();

@@ -5,8 +5,6 @@ import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.charact.AbstractAnimation;
 import com.mygdx.game.data.AbstractSkill;
 import com.mygdx.game.data.MyBob;
-import com.mygdx.game.render.IRender;
-import com.mygdx.game.render.enchantress.Skill1Render;
 
 public class Skill1 extends AbstractSkill {
     public static float MAX_DURATION = 0.5F;
@@ -50,7 +48,7 @@ public class Skill1 extends AbstractSkill {
             this.trigger = myBob;
             this.status = STATUS_RUNNING;
             endFlag = false;
-            myBob.makeBobIdolForce();
+            myBob.makeIdolForce();
             myBob.makeBobAttacking1();
             initBox();
 

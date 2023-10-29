@@ -4,31 +4,28 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mygdx.game.data.MyBob;
 import com.mygdx.game.data.MapData;
 import com.mygdx.game.manage.CharactorManager;
+import com.mygdx.game.manage.MusicManager;
+import com.mygdx.game.manage.TextManager;
 import com.mygdx.game.render.*;
 import com.mygdx.game.render.character.GoblinRender;
 import com.mygdx.game.render.enchantress.Skill1EffectRender;
 import com.mygdx.game.render.enchantress.Skill1Render;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,23 +52,33 @@ public class MainAsset {
 
     FileHandleResolver internal;
 
+    MusicManager musicManager;
+
     ObjShadowRender shadowRender;
     Skill1EffectRender skill1EffectRender;
 
     Map<String, IRender<?>> renderMap;
     BitmapFont bitmapFont;
 
-    TextRender textRender;
+    TextManager textManager;
 
     CharactorManager charactorManager;
 
-    public TextRender getTextRender() {
-        return textRender;
+    public TextManager getTextRender() {
+        return textManager;
     }
 
     public MainAsset() {
         bobProperties = new Properties();
-
+        charactorManager = new CharactorManager();
+        shadowRender = new ObjShadowRender();
+        this.assetManager = new AssetManager();
+        this.spriteBatch = new SpriteBatch();
+        this.shapeRenderer = new ShapeRenderer();
+        this.filledRender = new ShapeRenderer();
+        textManager = new TextManager();
+//        initRenderMap();
+        tmxMapLoader = new TmxMapLoader();
     }
 
     public CharactorManager getCharactorManager() {
@@ -79,22 +86,20 @@ public class MainAsset {
     }
 
     public void init() {
-        charactorManager = new CharactorManager();
-        shadowRender = new ObjShadowRender();
-        this.assetManager = new AssetManager();
-        this.spriteBatch = new SpriteBatch();
-        this.shapeRenderer = new ShapeRenderer();
-        textRender = new TextRender();
-//        initRenderMap();
-        tmxMapLoader = new TmxMapLoader();
+        shadowRender.init();
 //        this.bobCamera.zoom = -0.5f;
         assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(internal = new InternalFileHandleResolver()));
         assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(internal));
         renderMap = new HashMap<>();
 
-        bitmapFont = new BitmapFont();
-        textRender.init();
+
+        textManager.init();
         load();
+        musicManager = new MusicManager(this);
+    }
+
+    public MusicManager getMusicManager() {
+        return musicManager;
     }
 
     BobRender bobRender ;
@@ -128,7 +133,11 @@ public class MainAsset {
         return spriteBatch;
     }
 
-    public ShapeRenderer getShapRender(){
+    public ShapeRenderer getLineShapeRender(){
+        return this.shapeRenderer;
+    }
+    ShapeRenderer filledRender;
+    public ShapeRenderer getFilledShapeRender(){
         return this.shapeRenderer;
     }
 
@@ -159,6 +168,7 @@ public class MainAsset {
         assetManager.load("character/Enchantress/Attack_3.png",Texture.class);
         assetManager.load("character/Enchantress/Attack_4.png",Texture.class);
         assetManager.load("character/Knight/Idle.png",Texture.class);
+        assetManager.load("music/xiang_tai_moon_insect.mp3", Music.class);
         assetManager.load(MyMapRender.mapGround01,Texture.class);
         assetManager.load(MyMapRender.mapGround02,Texture.class);
         assetManager.load(MyMapRender.mapGround03,Texture.class);
@@ -169,6 +179,7 @@ public class MainAsset {
         mapData = new MapData();
         myMapRender = new MyMapRender(null,this);
 
+        bitmapFont = new BitmapFont();
     }
     public MyMapRender myMapRender;
 
@@ -266,4 +277,7 @@ public class MainAsset {
         return bitmapFont;
     }
 
+    public Music getMusic(String s) {
+        return assetManager.get(s,Music.class);
+    }
 }

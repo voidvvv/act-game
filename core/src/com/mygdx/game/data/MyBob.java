@@ -8,6 +8,7 @@ import com.mygdx.game.FightPropData;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.charact.AbstractAnimation;
 import com.mygdx.game.data.enchantress.Skill1;
+import com.mygdx.game.input.InputStateData;
 import com.mygdx.game.input.TouchVector;
 
 public class MyBob extends AbstractAnimation {
@@ -50,21 +51,25 @@ public class MyBob extends AbstractAnimation {
 
     public final Array<AbstractSkill> skills = new Array<>();
 
+    private InputStateData inputStateData;
+
 
     public MyBob(float height, float boxX, float boxY, MapData mapData) {
 
 //        this.bobRender = MyGdxGame.getGame().getMainAsset().getBobRender();
-
+        inputStateData = MyGdxGame.getGame().getInputStateData();
         positionData.rectangle.x = boxX;
         positionData.rectangle.y = boxY;
         positionData.height = height;
         this.skills.add(new Skill1(Skill1.MAX_DURATION, this));
+
 
     }
 
     int button_index = -1;
 
     public void update(float delta) {
+        stateTime += delta;
         checkButton();
         updateDirection(delta);
         if (status == STATUS_RUN) {
@@ -72,17 +77,26 @@ public class MyBob extends AbstractAnimation {
             move();
             vel.scl(1.0f / delta);
         }
+        checkSkill0(delta);
+
+        pos().update(delta);
+        fixBobPosition();
+    }
+
+    private void checkSkill0(float delta) {
+        if (inputStateData.attack_key_0.key_down && !inputStateData.attack_key_0.consume){
+            inputStateData.attack_key_0.consume = true;
+            useSkill(0);
+        }
+        // inputStateData
         if (status == STATUS_ATTACK1) {
             skills.get(0).update(delta);
             if (stateTime >= currentMaxSkillTime) {
                 System.out.println("makeBobIdolForce");
-                makeBobIdolForce();
+                makeIdolForce();
 
             }
         }
-        stateTime += delta;
-        pos().update(delta);
-        fixBobPosition();
     }
 
     private void checkButton() {
@@ -253,7 +267,7 @@ public class MyBob extends AbstractAnimation {
 
     }
 
-    public void makeBobIdolForce() {
+    public void makeIdolForce() {
         status = STATUS_IDOL;
         stateTime = 0;
         vel.setZero();

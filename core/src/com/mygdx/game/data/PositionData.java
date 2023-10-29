@@ -8,6 +8,8 @@ import com.mygdx.game.utils.MyLocalUtil;
 public class PositionData {
     public final Vector2 pos = new Vector2(); // position
 
+    public float z = 0f;
+
     public final Vector2 posCenter = new Vector2();
 
     public final Vector2 rectangle = new Vector2(); // shape

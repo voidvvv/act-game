@@ -10,6 +10,8 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 //		config.fullscreen = true;
 //		config.resizable = false;
+		config.width = 640;
+		config.height = 480;
 		new LwjglApplication(MyGdxGame.getInstance(), config);
 //		new LwjglApplication(new TmpGame(),config);
 	}

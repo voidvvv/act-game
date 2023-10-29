@@ -11,22 +11,26 @@ import com.mygdx.game.data.MapData;
 
 public class ActInputProcessor extends InputAdapter {
     private MainAsset mainAsset;
-    public MyBob myBob;
 
     public MapData mapData;
 
     public final TouchVector[] moveTo = {new TouchVector(),new TouchVector()};
 
+    private InputStateData inputStateData;
+
 
     public ActInputProcessor(MainAsset mainAsset) {
         this.mainAsset = mainAsset;
-        myBob = mainAsset.getActData();
+        inputStateData = MyGdxGame.getInstance().getInputStateData();
         mapData = mainAsset.getMapData();
     }
 
     @Override
     public boolean keyDown(int keycode) {
-
+        if (keycode == Input.Keys.Q){
+            inputStateData.attack_key_0.key_down = true;
+            inputStateData.attack_key_0.consume = false;
+        }
         if (keycode == Input.Keys.SPACE){
             mapData.mapLightFlag = !mapData.mapLightFlag;
         }
@@ -35,16 +39,9 @@ public class ActInputProcessor extends InputAdapter {
 
     @Override
     public boolean keyUp(int keycode) {
-        if (keycode == Input.Keys.UP){
-            myBob.bobUp(false);
-        }else if (keycode == Input.Keys.DOWN){
-            myBob.bobDown(false);
+        if (keycode == Input.Keys.Q){
+            inputStateData.attack_key_0.key_down = false;
         }
-        if (keycode == Input.Keys.RIGHT){
-            myBob.bobRight(false);
-        }else if (keycode == Input.Keys.LEFT){
-            myBob.bobLeft(false);
-        };
         return false;
     }
     Vector3 tmp = new Vector3();
@@ -90,8 +87,4 @@ public class ActInputProcessor extends InputAdapter {
         return false;
     }
 
-    public InputProcessor replaceBob(MyBob myBob) {
-        this.myBob = myBob;
-        return this;
-    }
 }

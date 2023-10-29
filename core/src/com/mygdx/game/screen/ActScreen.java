@@ -2,18 +2,23 @@ package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.BaseResourceManager;
+import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.MyBob;
 import com.mygdx.game.data.MapData;
 import com.mygdx.game.data.charact.AbstractAnimation;
 import com.mygdx.game.manage.CameraManager;
 import com.mygdx.game.manage.CharactorManager;
+import com.mygdx.game.manage.MusicManager;
+import com.mygdx.game.render.GameComponentRender;
 import com.mygdx.game.render.MyMapRender;
 import com.mygdx.game.render.TestRender;
 
@@ -29,39 +34,49 @@ public class ActScreen extends BaseResourceManager implements Screen {
 
     MyMapRender myMapRender;
 
-    boolean debug = true;
+    boolean debug = false;
 
 
     // test
 //    TestRender testRender;
     CharactorManager charactorManager ;
+    Music music ;
+    GameComponentRender gameComponentRender;
     @Override
     public void show() {
         super.show();
 
         worldCollideRender = new ShapeRenderer();
         spriteBatch = this.mainAsset.getSpriteBatch();
-        CameraManager cameraManager = new CameraManager();
-        bobCamera = cameraManager.getBobCamera();
+
+        bobCamera = MyGdxGame.getInstance().getCameraManager().getBobCamera();
 
         myMapRender = game.getMainAsset().myMapRender;
 
         mapData = this.game.getMainAsset().getMapData();
         charactorManager = this.game.getMainAsset().getCharactorManager();
         charactorManager.clearAllAct();
-        charactorManager.resetBob(20,20);
+        charactorManager.resetBob();
         myBob = charactorManager.getBob();
-        game.setCameraManager(cameraManager);
+
         Gdx.input.setInputProcessor(this.game.getActInputProcessor());
+        music = game.getMainAsset().getMusicManager().getMusic(MusicManager.bgm_01);
+        if (music.isPlaying()){
+            music.stop();
+        }
+        music.setLooping(true);
+        music.setVolume(0.5f);
+//        music.play();
+        System.out.println(music.getPosition());
+        gameComponentRender = MyGdxGame.getInstance().getGameComponentRender();
+        gameComponentRender.init();
 //        myLight.setColor();
     }
 float t=0;
-    Vector3 v3 = new Vector3();
 
-    Color color = Color.FIREBRICK.cpy();
-    float[] lightPosition = new float[]{100,100};
     @Override
     public void render(float delta) {
+        super.render(delta);
         t+=delta;
         game.getCameraManager().update(delta);
 
@@ -70,6 +85,7 @@ float t=0;
 //        lightingShader.bind();
 //        spriteBatch.setShader(lightingShader);
         draw(delta);
+
 //        testRender.render();
     }
 
@@ -80,6 +96,7 @@ float t=0;
 
         renderMap();
         renderDebugBox();
+        gameComponentRender.render();
     }
 
     private void renderDebugBox() {

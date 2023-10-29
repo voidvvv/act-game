@@ -1,11 +1,9 @@
 package com.mygdx.game.render.enchantress;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.MainAsset;
-import com.mygdx.game.data.AbstractSkill;
 import com.mygdx.game.data.enchantress.Skill1;
 import com.mygdx.game.render.MyRenderer;
 
@@ -20,7 +18,7 @@ public class Skill1Render implements MyRenderer<Skill1> {
     public Skill1Render(MainAsset mainAsset) {
 
         spriteBatch = mainAsset.getSpriteBatch();
-        shapeRenderer = mainAsset.getShapRender();
+        shapeRenderer = mainAsset.getLineShapeRender();
 //        camera = mainAsset.getBobCamera();
     }
 

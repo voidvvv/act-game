@@ -21,4 +21,9 @@ public abstract class BaseResourceManager implements Screen {
         mainAsset = game.getMainAsset();
         batchManager = game.getBatchManager();
     }
+
+    @Override
+    public void render(float delta) {
+        game.update(delta);
+    }
 }

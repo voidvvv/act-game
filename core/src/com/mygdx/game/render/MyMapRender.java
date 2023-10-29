@@ -1,16 +1,19 @@
 package com.mygdx.game.render;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.*;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.MainAsset;
 import com.mygdx.game.MyGdxGame;
@@ -49,6 +52,9 @@ public class MyMapRender {
 
     Texture oceanBackGround3;
 
+    TextureRegion tr ;
+
+
 //         assetManager.load("map/pic/back_ocean_cloud_01.png",Texture.class);
 //        assetManager.load("map/pic/back_ocean_cloud_02.png",Texture.class);
     public MyMapRender(OrthographicCamera camera, MainAsset mainAsset) {
@@ -57,13 +63,14 @@ public class MyMapRender {
         mapData = mainAsset.getMapData();
         spriteBatch = mainAsset.getSpriteBatch();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
-
         perspectiveCamera = new PerspectiveCamera(73f,200,200);
         dealMap(map);
         oceanBackGround = mainAsset.getTexture(mapGround01);
         oceanBackGround2 = mainAsset.getTexture(mapGround02);
         oceanBackGround3 = mainAsset.getTexture(mapGround03);
 
+        tr = new TextureRegion(oceanBackGround);
+        tr.flip(false,true);
 //        tmp = mainAsset.getKnightIdle()[0][0];
         initLightCover();
     }
@@ -74,21 +81,18 @@ public class MyMapRender {
     }
 
     private void dealMap(TiledMap map) {
-        MapLayers layers = map.getLayers();
-        TiledMapTileLayer tiledMapTileLayer = (TiledMapTileLayer) layers.get("pics01");
-
-        MapProperties properties = tiledMapTileLayer.getProperties();
-        Iterator<String> keys = properties.getKeys();
-        while (keys.hasNext()){
-            String next = keys.next();
-
-            System.out.println(next+" == "+properties.get(next));
-        }
-
-        MapObject obj01 = map.getLayers().get("obj01").getObjects().get(0);
+        MapObjects objLayerObjs = map.getLayers().get("obj01").getObjects();
+        MapObject obj01 = objLayerObjs.get(0);
         RectangleMapObject tangle = (RectangleMapObject) obj01;
-        MyGdxGame.getGame().getMainAsset().getCharactorManager().resetBob(tangle.getRectangle().x,tangle.getRectangle().y);
+        CharactorManager charactorManager = MyGdxGame.getGame().getMainAsset().getCharactorManager();
+        charactorManager.initBobPosition(tangle.getRectangle().x,tangle.getRectangle().y);
 
+        for(int x=1; x<objLayerObjs.getCount(); x++){
+            RectangleMapObject mapObject = (RectangleMapObject)(objLayerObjs.get(x));
+            Rectangle rectangle = mapObject.getRectangle();
+            System.out.println("rectangle -  " + x +" : " + rectangle);
+            charactorManager.goblinBirthPlace.add(new float[]{rectangle.x,rectangle.y,rectangle.width,rectangle.height});
+        }
     }
 
     public void render(){
@@ -100,18 +104,14 @@ public class MyMapRender {
         spriteBatch.setProjectionMatrix(bobCamera.combined);
         spriteBatch.draw(oceanBackGround3,0f,mapData.height*0.85f,mapData.width,mapData.height);
         spriteBatch.end();
-        shapeRenderer.setProjectionMatrix(bobCamera.combined);
+//        shapeRenderer.setProjectionMatrix(bobCamera.combined);
 
         tiledMapRenderer.setView(bobCamera);
 
         tiledMapRenderer.render();
 
-        Gdx.gl.glDepthMask(true);
-
-
         renderCharacter();
 
-//        drawOrigiPoint();
         if (mapData.mapLightFlag){
             myShaderBatch.setProjectMetircs(bobCamera.combined);
             myShaderBatch.draw(myLight);
