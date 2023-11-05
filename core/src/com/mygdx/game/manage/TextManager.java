@@ -2,6 +2,7 @@ package com.mygdx.game.manage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -35,15 +36,14 @@ public class TextManager {
         cameraManager = MyGdxGame.getGame().getCameraManager();
         generator  = new FreeTypeFontGenerator(Gdx.files.internal("font/song_01.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        param.size = 20;
-
+        param.size = 50;
+//        param.color = Color.LIGHT_GRAY.cpy();
         param.characters = FreeTypeFontGenerator.DEFAULT_CHARS + "中文";
         font = generator.generateFont(param);
     }
 
     public void render(String text, float x, float y){
         layout.setText(font,text);
-
         v3.x -= layout.width/2;
         v3.y += layout.height/2;
         screenCamera.unproject(v3.set(x,y,0));
@@ -61,6 +61,8 @@ public class TextManager {
         v3.x -= layout.width/2;
         v3.y += layout.height/2;
         font.draw(spriteBatch,layout,v3.x,v3.y);
+
+
     }
 
     public void update(float delta){

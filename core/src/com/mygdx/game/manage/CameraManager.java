@@ -27,7 +27,7 @@ public class CameraManager {
         bobCamera.position.set(tmpv3);
 
         tmpv3.set(screenCamera.position);
-        screenCamera.setToOrtho(false,600,600);
+        screenCamera.setToOrtho(false,2100,2100);
         screenCamera.update(false);
         screenCamera.position.set(tmpv3);
     }
