@@ -12,7 +12,7 @@ public abstract class BaseResourceManager implements Screen {
     protected MapData mapData;
 
     public BaseResourceManager() {
-
+        // test
     }
 
     @Override
