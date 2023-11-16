@@ -15,4 +15,6 @@ public class DesktopLauncher {
 		new LwjglApplication(MyGdxGame.getInstance(), config);
 //		new LwjglApplication(new TmpGame(),config);
 	}
+
+
 }
