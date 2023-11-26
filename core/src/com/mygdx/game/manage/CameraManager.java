@@ -64,6 +64,9 @@ public class CameraManager {
     }
 
     public Vector3 convertCoordinate(Vector3 v3, Camera c1, Camera c2){
+        if (c1 == c2){
+            return v3;
+        }
         c1.project(v3);
         v3.y = Gdx.graphics.getHeight()-v3.y;
         c2.unproject(v3);

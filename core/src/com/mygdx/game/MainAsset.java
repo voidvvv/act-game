@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -26,7 +27,9 @@ import com.mygdx.game.render.character.GoblinRender;
 import com.mygdx.game.render.enchantress.Skill1EffectRender;
 import com.mygdx.game.render.enchantress.Skill1Render;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -59,26 +62,95 @@ public class MainAsset {
 
     Map<String, IRender<?>> renderMap;
     BitmapFont bitmapFont;
+    BitmapFont ttfBitmapFont;
 
     TextManager textManager;
 
     CharactorManager charactorManager;
+
+    UIRender uiRender;
+
+    Map<Integer,BitmapFont> fontSizeMap;
 
     public TextManager getTextRender() {
         return textManager;
     }
 
     public MainAsset() {
+        fontSizeMap = new HashMap<>();
+        uiRender = new UIRender();
         bobProperties = new Properties();
         charactorManager = new CharactorManager();
         shadowRender = new ObjShadowRender();
         this.assetManager = new AssetManager();
         this.spriteBatch = new SpriteBatch();
         this.shapeRenderer = new ShapeRenderer();
-        this.filledRender = new ShapeRenderer();
+
+        bobRender = new BobRender();
         textManager = new TextManager();
 //        initRenderMap();
         tmxMapLoader = new TmxMapLoader();
+        renderMap = new HashMap<>();
+        myMapRender = new MyMapRender();
+        mapData = new MapData();
+        newFont();
+    }
+
+    private void newFont() {
+        assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(internal));
+        bitmapFont = new BitmapFont();
+
+//        assetManager.load("font/song_01.ttf",BitmapFont.class,param);
+//        assetManager.finishLoading();
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/song_01.ttf"));
+        // C:\Windows\Fonts\BASKVILL.TTF
+//        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.absolute("C:\\Windows\\Fonts\\simsunb.ttf"));
+
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        StringBuilder chineseChars = new StringBuilder(FreeTypeFontGenerator.DEFAULT_CHARS);
+        apppendChineseSet(chineseChars);
+//        chineseChars.append("这是默认中文");
+        parameter.characters = chineseChars.toString();
+        for(int x= 50;x<150;x++){
+            parameter.size = x; // 设置字体大小
+            BitmapFont bitmapFont1 = generator.generateFont(parameter);
+            fontSizeMap.put(x,bitmapFont1);
+        }
+
+        generator.dispose(); // 释放资源
+
+
+    }
+
+    public Map<Integer, BitmapFont> getFontSizeMap() {
+        return fontSizeMap;
+    }
+
+    private void apppendChineseSet(StringBuilder chineseChars) {
+        FileHandle internal1 = Gdx.files.internal("font/ChineseText2.txt");
+        Reader reader = internal1.reader();
+        BufferedReader br = new BufferedReader(reader);
+        String s = null;
+        while (true){
+            try {
+                if (!((s = br.readLine())!=null)) break;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            if (s.length()>0){
+                chineseChars.append(s);
+            }
+        }
+        try {
+            br.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BitmapFont getTtfBitmapFont() {
+        return ttfBitmapFont;
     }
 
     public CharactorManager getCharactorManager() {
@@ -89,13 +161,13 @@ public class MainAsset {
         shadowRender.init();
 //        this.bobCamera.zoom = -0.5f;
         assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(internal = new InternalFileHandleResolver()));
-        assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(internal));
-        renderMap = new HashMap<>();
-
+        this.shapeRenderer.setAutoShapeType(true);
 
         textManager.init();
         load();
         musicManager = new MusicManager(this);
+        bobRender.init(MyGdxGame.getGame(),this);
+        uiRender.init();
     }
 
     public MusicManager getMusicManager() {
@@ -119,9 +191,7 @@ public class MainAsset {
     }
 
     public BobRender getBobRender() {
-        if (bobRender == null){
-            bobRender = new BobRender(MyGdxGame.getGame(),this);
-        }
+
         return bobRender;
     }
 
@@ -136,7 +206,6 @@ public class MainAsset {
     public ShapeRenderer getLineShapeRender(){
         return this.shapeRenderer;
     }
-    ShapeRenderer filledRender;
     public ShapeRenderer getFilledShapeRender(){
         return this.shapeRenderer;
     }
@@ -176,10 +245,10 @@ public class MainAsset {
 
         background = tmxMapLoader.load(mapName);
 
-        mapData = new MapData();
-        myMapRender = new MyMapRender(null,this);
 
-        bitmapFont = new BitmapFont();
+
+        myMapRender.init(null,this);
+
     }
     public MyMapRender myMapRender;
 
@@ -275,6 +344,10 @@ public class MainAsset {
 
     public BitmapFont getDefaultFont() {
         return bitmapFont;
+    }
+
+    public UIRender getUiRender() {
+        return uiRender;
     }
 
     public Music getMusic(String s) {

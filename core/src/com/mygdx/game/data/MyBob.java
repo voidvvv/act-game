@@ -104,9 +104,12 @@ public class MyBob extends AbstractAnimation {
         if (button_index == -1) {
 
             for (int x = 0; x < arr.length; x++) {
-                if (arr[x].touch || arr[x].drag) {
+                if (!arr[x].consume && (arr[x].touch || arr[x].drag)) {
                     button_index = x;
                     target.set(arr[x].x, arr[x].y);
+                    if (arr[x].touch){
+                        arr[x].consume = true;
+                    }
                     break;
                 }
             }

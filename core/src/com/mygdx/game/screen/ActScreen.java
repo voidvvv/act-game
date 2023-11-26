@@ -21,6 +21,7 @@ import com.mygdx.game.manage.MusicManager;
 import com.mygdx.game.render.GameComponentRender;
 import com.mygdx.game.render.MyMapRender;
 import com.mygdx.game.render.TestRender;
+import com.mygdx.game.render.UIRender;
 
 public class ActScreen extends BaseResourceManager implements Screen {
     SpriteBatch spriteBatch;
@@ -42,6 +43,8 @@ public class ActScreen extends BaseResourceManager implements Screen {
     CharactorManager charactorManager ;
     Music music ;
     GameComponentRender gameComponentRender;
+
+    UIRender uiRender;
     @Override
     public void show() {
         super.show();
@@ -71,6 +74,7 @@ public class ActScreen extends BaseResourceManager implements Screen {
         gameComponentRender = MyGdxGame.getInstance().getGameComponentRender();
         gameComponentRender.init();
 //        myLight.setColor();
+        uiRender = mainAsset.getUiRender();
     }
 float t=0;
 
@@ -79,14 +83,11 @@ float t=0;
         super.render(delta);
         t+=delta;
         game.getCameraManager().update(delta);
-
-//        lightingShader.setUniformf("iResolution",v3.set(2000,2000,1.0f));
         update(delta);
-//        lightingShader.bind();
-//        spriteBatch.setShader(lightingShader);
-        draw(delta);
 
-//        testRender.render();
+        draw(delta);
+        uiRender.render();
+
     }
 
 
@@ -127,8 +128,6 @@ float t=0;
     private void update(float delta) {
 //        mapData.update(delta);
         myMapRender.act(delta);
-
-//        spriteBatch.setProjectionMatrix(bobCamera.combined);
 
         worldCollideRender.setProjectionMatrix(bobCamera.combined);
     }

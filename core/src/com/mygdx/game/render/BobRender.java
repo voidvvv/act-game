@@ -45,7 +45,11 @@ public class BobRender implements IRender<MyBob>{
     float heightRatio;
 
 
-    public BobRender(MyGdxGame myGdxGame, MainAsset mainAsset) {
+    public BobRender() {
+
+    }
+
+    public void init(MyGdxGame myGdxGame, MainAsset mainAsset){
         this.myGdxGame = myGdxGame;
         this.mainAsset = mainAsset;
 

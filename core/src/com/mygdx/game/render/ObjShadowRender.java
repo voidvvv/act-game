@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Matrix4;
 public class ObjShadowRender {
     Mesh mesh;
 
-    Color defaultColor = Color.DARK_GRAY;
+    Color defaultColor = Color.ORANGE;
 
     ShaderProgram shaderProgram;
 

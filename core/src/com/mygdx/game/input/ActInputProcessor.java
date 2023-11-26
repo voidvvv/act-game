@@ -31,6 +31,10 @@ public class ActInputProcessor extends InputAdapter {
             inputStateData.attack_key_0.key_down = true;
             inputStateData.attack_key_0.consume = false;
         }
+        if (keycode == Input.Keys.W){
+            inputStateData.attack_key_1.key_down = true;
+            inputStateData.attack_key_1.consume = false;
+        }
         if (keycode == Input.Keys.SPACE){
             mapData.mapLightFlag = !mapData.mapLightFlag;
         }
@@ -54,6 +58,7 @@ public class ActInputProcessor extends InputAdapter {
             moveTo[pointer].x = tmp.x;
             moveTo[pointer].y = tmp.y;
             moveTo[pointer].touch = true;
+            moveTo[pointer].consume = false;
             return true;
         }
         return false;
@@ -69,6 +74,7 @@ public class ActInputProcessor extends InputAdapter {
             moveTo[pointer].y = tmp.y;
             moveTo[pointer].touch = false;
             moveTo[pointer].drag = false;
+
             return true;
         }
         return false;
@@ -82,6 +88,7 @@ public class ActInputProcessor extends InputAdapter {
             moveTo[pointer].x = tmp.x;
             moveTo[pointer].y = tmp.y;
             moveTo[pointer].drag = true;
+            moveTo[pointer].consume = false;
             return true;
         }
         return false;

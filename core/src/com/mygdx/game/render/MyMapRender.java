@@ -57,7 +57,11 @@ public class MyMapRender {
 
 //         assetManager.load("map/pic/back_ocean_cloud_01.png",Texture.class);
 //        assetManager.load("map/pic/back_ocean_cloud_02.png",Texture.class);
-    public MyMapRender(OrthographicCamera camera, MainAsset mainAsset) {
+    public MyMapRender() {
+
+    }
+
+    public void init(OrthographicCamera camera, MainAsset mainAsset){
         shapeRenderer = new ShapeRenderer();
         map = mainAsset.getBackground();
         mapData = mainAsset.getMapData();

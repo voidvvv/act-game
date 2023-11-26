@@ -6,4 +6,6 @@ public class TouchVector extends Vector2 {
     public boolean touch;
 
     public boolean drag;
+
+    public boolean consume;
 }

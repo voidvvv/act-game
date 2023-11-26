@@ -98,6 +98,6 @@ public class GameComponentRender {
         String name = act.name();
         Vector2 pos = act.pos().pos;
 
-        textManager.render(name,pos.x,pos.y+act.pos().height*1.2f,MyGdxGame.getGame().getCameraManager().getBobCamera());
+        textManager.render(name,pos.x,pos.y+act.pos().height*1.2f,MyGdxGame.getGame().getCameraManager().getBobCamera(),50);
     }
 }
