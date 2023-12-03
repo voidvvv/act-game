@@ -71,6 +71,9 @@ public class TextManager {
 
     public void render(String text, float x, float y, Camera camera,int size){
         BitmapFont font = fontSize.get(size);
+        if (font == null){
+            font = this.font;
+        }
         layout.setText(font,text);
         cameraManager.convertCoordinate(v3.set(x,y,0),camera,screenCamera);
 //        camera.project(v3.set(x,y,0));
@@ -80,8 +83,9 @@ public class TextManager {
 //        screenCamera.unproject(v3);
         v3.x -= layout.width/2;
         v3.y += layout.height/2;
+        font.setColor(Color.BLACK);
         font.draw(spriteBatch,layout,v3.x,v3.y);
-        font.draw(spriteBatch,"中啊abc",v3.x,v3.y+100);
+//        font.draw(spriteBatch,"中啊abc",v3.x,v3.y+100);
     }
 
     public void update(float delta){

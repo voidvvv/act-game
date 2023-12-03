@@ -52,9 +52,9 @@ public class Skill1Effect implements SkillEffect, KeyRenderUpdater, Pool.Poolabl
         PositionData posData = bob.pos();
         float dx = posData.directVect.x>=0? 1f: -1f;
 
-        this.position.pos.set(posData.posCenter.x+(dx*6),posData.posCenter.y-10);
-        this.position.rectangle.set(dx*10,3);
-        this.position.height = posData.height+20;
+        this.position.pos.set(posData.posCenter.x+(dx*10),posData.posCenter.y-10);
+        this.position.rectangle.set(dx*18,20);
+        this.position.height = 0.5f*posData.height;
         this.position.directVect.set(posData.directVect);
     }
 

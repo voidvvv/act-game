@@ -49,10 +49,10 @@ public class ActScreen extends BaseResourceManager implements Screen {
     public void show() {
         super.show();
 
-        worldCollideRender = new ShapeRenderer();
+        worldCollideRender = this.mainAsset.getFilledShapeRender();
         spriteBatch = this.mainAsset.getSpriteBatch();
 
-        bobCamera = MyGdxGame.getInstance().getCameraManager().getBobCamera();
+        bobCamera = game.getCameraManager().getBobCamera();
 
         myMapRender = game.getMainAsset().myMapRender;
 
@@ -64,9 +64,7 @@ public class ActScreen extends BaseResourceManager implements Screen {
 
         Gdx.input.setInputProcessor(this.game.getActInputProcessor());
         music = game.getMainAsset().getMusicManager().getMusic(MusicManager.bgm_01);
-        if (music.isPlaying()){
-            music.stop();
-        }
+
         music.setLooping(true);
         music.setVolume(0.5f);
 //        music.play();
@@ -84,7 +82,6 @@ float t=0;
         t+=delta;
         game.getCameraManager().update(delta);
         update(delta);
-
         draw(delta);
         uiRender.render();
 
@@ -93,8 +90,6 @@ float t=0;
 
     private void draw(float delta) {
         ScreenUtils.clear(Color.CORAL,true);
-//        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-
         renderMap();
         renderDebugBox();
         gameComponentRender.render();

@@ -11,6 +11,8 @@ import com.mygdx.game.data.MapData;
 import com.mygdx.game.data.charact.AbstractAnimation;
 
 public class CameraManager {
+    public float screenWidth;
+    public float screenHeight;
     OrthographicCamera bobCamera;
     OrthographicCamera screenCamera;
     Vector3 lerpTarget = new Vector3();
@@ -18,6 +20,8 @@ public class CameraManager {
     public CameraManager() {
         screenCamera = new OrthographicCamera();
         bobCamera = new OrthographicCamera();
+
+        screenWidth = screenHeight = 2100F;
     }
     Vector3 tmpv3 = new Vector3();
     public void resize(int width, int height) {
@@ -27,7 +31,7 @@ public class CameraManager {
         bobCamera.position.set(tmpv3);
 
         tmpv3.set(screenCamera.position);
-        screenCamera.setToOrtho(false,2100,2100);
+        screenCamera.setToOrtho(false,screenWidth,screenHeight);
         screenCamera.update(false);
         screenCamera.position.set(tmpv3);
     }

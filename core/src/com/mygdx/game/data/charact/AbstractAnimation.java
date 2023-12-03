@@ -9,6 +9,7 @@ import com.mygdx.game.data.PositionData;
 import com.mygdx.game.data.SkillEffect;
 import com.mygdx.game.data.enchantress.Skill1Effect;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 public abstract class AbstractAnimation  implements KeyRenderUpdater, NameAdaptor {
@@ -17,6 +18,10 @@ public abstract class AbstractAnimation  implements KeyRenderUpdater, NameAdapto
 
 
     public int status;
+
+    public float time;
+    public float stateTime;
+
 
     protected PositionData positionData = new PositionData();
 
@@ -35,6 +40,9 @@ public abstract class AbstractAnimation  implements KeyRenderUpdater, NameAdapto
 
     }
 
+    public boolean bossFlag(){
+        return false;
+    }
 
     public abstract int camp();
 

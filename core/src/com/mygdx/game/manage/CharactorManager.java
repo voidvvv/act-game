@@ -5,12 +5,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.data.MyBob;
 import com.mygdx.game.data.charact.AbstractAnimation;
+import com.mygdx.game.data.charact.BossGoblin;
 import com.mygdx.game.data.charact.Goblin;
 import com.mygdx.game.data.pool.character.GoblinPool;
 
 public class CharactorManager {
     public static final float GOBLIN_BIRTH_INTERVAL = 5F;
     Array<AbstractAnimation> acts; // total
+
+    public int totalGoblinCnt;
+    boolean bossFlag = false;
 
     public GoblinPool goblinPool;
     public  final Array<float[]> goblinBirthPlace = new Array<>();
@@ -56,11 +60,25 @@ public class CharactorManager {
             float[] floats = goblinBirthPlace.get(random);
             float x = MathUtils.random(floats[2])+floats[0];
             float y = MathUtils.random(floats[3])+floats[1];
-            goblin.init("Golin!"+goblins.size,x,y,20,20,20);
-            System.out.println("第" + (goblins.size) + " 只 goblin： " + x +"____"+ y);
+            goblin.init("Golin!"+goblins.size,x,y,20,20,12);
             acts.add(goblin);
             goblins.add(goblin);
             goblinBirth = 0;
+
+            totalGoblinCnt++;
+        }
+
+        if (!bossFlag && totalGoblinCnt>=1){
+            // generate a big InitialState!
+            BossGoblin boss = new BossGoblin();
+            int random = MathUtils.random(goblinBirthPlace.size-1);
+            float[] floats = goblinBirthPlace.get(random);
+            float x = MathUtils.random(floats[2])+floats[0];
+            float y = MathUtils.random(floats[3])+floats[1];
+            boss.init("aaaaa",x,y,45,45,30);
+            acts.add(boss);
+            goblins.add(boss);
+            bossFlag = true;
         }
     }
 

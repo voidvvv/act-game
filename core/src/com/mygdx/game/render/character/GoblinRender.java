@@ -51,6 +51,9 @@ public class GoblinRender {
         shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.rect(rectangleShapeZ.x,rectangleShapeZ.y,rectangleShapeZ.width,rectangleShapeZ.height);
 
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.rect(rectangleShapeZ.x,rectangleShapeZ.y,rectangleShapeZ.width,rectangleShapeZ.height);
 
         shapeRenderer.end();
         if (goblin.status == Goblin.DYING) {

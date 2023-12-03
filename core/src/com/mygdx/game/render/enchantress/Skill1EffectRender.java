@@ -16,8 +16,8 @@ public class Skill1EffectRender {
         if (s1e.status != Skill1Effect.Enable){
             return;
         }
-
-//        Rectangle rectangleShape = position.getRectangleShape();
+//
+//        Rectangle rectangleShape = s1e.position.getRectangleShape();
 //        Rectangle rectangleShapeZ = position.getRectangleShapeZ();
 //        shapeRenderer.setProjectionMatrix(MyGdxGame.getGame().getMainAsset().getBobCamera().combined);
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

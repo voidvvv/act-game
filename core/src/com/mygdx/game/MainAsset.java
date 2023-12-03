@@ -23,6 +23,7 @@ import com.mygdx.game.manage.CharactorManager;
 import com.mygdx.game.manage.MusicManager;
 import com.mygdx.game.manage.TextManager;
 import com.mygdx.game.render.*;
+import com.mygdx.game.render.character.GoblinBossRender;
 import com.mygdx.game.render.character.GoblinRender;
 import com.mygdx.game.render.enchantress.Skill1EffectRender;
 import com.mygdx.game.render.enchantress.Skill1Render;
@@ -70,7 +71,7 @@ public class MainAsset {
 
     UIRender uiRender;
 
-    Map<Integer,BitmapFont> fontSizeMap;
+    Map<Integer, BitmapFont> fontSizeMap;
 
     public TextManager getTextRender() {
         return textManager;
@@ -93,6 +94,7 @@ public class MainAsset {
         renderMap = new HashMap<>();
         myMapRender = new MyMapRender();
         mapData = new MapData();
+        goblinBossRender = new GoblinBossRender();
         newFont();
     }
 
@@ -112,12 +114,14 @@ public class MainAsset {
         apppendChineseSet(chineseChars);
 //        chineseChars.append("这是默认中文");
         parameter.characters = chineseChars.toString();
-        for(int x= 50;x<150;x++){
+        for (int x = 50; x < 60; x++) {
             parameter.size = x; // 设置字体大小
             BitmapFont bitmapFont1 = generator.generateFont(parameter);
-            fontSizeMap.put(x,bitmapFont1);
+            fontSizeMap.put(x, bitmapFont1);
         }
-
+        parameter.size = 140; // 设置字体大小
+        BitmapFont bitmapFontTmp = generator.generateFont(parameter);
+        fontSizeMap.put(140, bitmapFontTmp);
         generator.dispose(); // 释放资源
 
 
@@ -128,17 +132,17 @@ public class MainAsset {
     }
 
     private void apppendChineseSet(StringBuilder chineseChars) {
-        FileHandle internal1 = Gdx.files.internal("font/ChineseText2.txt");
+        FileHandle internal1 = Gdx.files.internal("font/ChineseText.txt");
         Reader reader = internal1.reader();
         BufferedReader br = new BufferedReader(reader);
         String s = null;
-        while (true){
+        while (true) {
             try {
-                if (!((s = br.readLine())!=null)) break;
+                if (!((s = br.readLine()) != null)) break;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            if (s.length()>0){
+            if (s.length() > 0) {
                 chineseChars.append(s);
             }
         }
@@ -166,25 +170,26 @@ public class MainAsset {
         textManager.init();
         load();
         musicManager = new MusicManager(this);
-        bobRender.init(MyGdxGame.getGame(),this);
+        bobRender.init(MyGdxGame.getGame(), this);
         uiRender.init();
+        goblinBossRender.init();
     }
 
     public MusicManager getMusicManager() {
         return musicManager;
     }
 
-    BobRender bobRender ;
+    BobRender bobRender;
 
     public Skill1EffectRender getSkill1EffectRender() {
-        if (skill1EffectRender == null){
+        if (skill1EffectRender == null) {
             skill1EffectRender = new Skill1EffectRender();
         }
         return skill1EffectRender;
     }
 
     public Skill1Render getSkill1Render() {
-        if (skill1Render == null){
+        if (skill1Render == null) {
             skill1Render = new Skill1Render(this);
         }
         return skill1Render;
@@ -195,7 +200,7 @@ public class MainAsset {
         return bobRender;
     }
 
-    public ObjShadowRender getShadowRender(){
+    public ObjShadowRender getShadowRender() {
         return shadowRender;
     }
 
@@ -203,10 +208,11 @@ public class MainAsset {
         return spriteBatch;
     }
 
-    public ShapeRenderer getLineShapeRender(){
+    public ShapeRenderer getLineShapeRender() {
         return this.shapeRenderer;
     }
-    public ShapeRenderer getFilledShapeRender(){
+
+    public ShapeRenderer getFilledShapeRender() {
         return this.shapeRenderer;
     }
 
@@ -220,7 +226,7 @@ public class MainAsset {
         return bobProperties;
     }
 
-    public void load()  {
+    public void load() {
         try {
             FileHandle internal1 = Gdx.files.internal("props/bob.properties");
 
@@ -230,78 +236,86 @@ public class MainAsset {
             throw new RuntimeException(e);
         }
         assetManager.load("bob.png", Texture.class);
-        assetManager.load("character/Enchantress/Idle.png",Texture.class);
-        assetManager.load("character/Enchantress/Run.png",Texture.class);
-        assetManager.load("character/Enchantress/Attack_1.png",Texture.class);
-        assetManager.load("character/Enchantress/Attack_2.png",Texture.class);
-        assetManager.load("character/Enchantress/Attack_3.png",Texture.class);
-        assetManager.load("character/Enchantress/Attack_4.png",Texture.class);
-        assetManager.load("character/Knight/Idle.png",Texture.class);
+        assetManager.load("character/Enchantress/Idle.png", Texture.class);
+        assetManager.load("character/Enchantress/Run.png", Texture.class);
+        assetManager.load("character/Enchantress/Attack_1.png", Texture.class);
+        assetManager.load("character/Enchantress/Attack_2.png", Texture.class);
+        assetManager.load("character/Enchantress/Attack_3.png", Texture.class);
+        assetManager.load("character/Enchantress/Attack_4.png", Texture.class);
+        assetManager.load("profile/enhancer_profile.png", Texture.class);
+        assetManager.load("character/Knight/Idle.png", Texture.class);
         assetManager.load("music/xiang_tai_moon_insect.mp3", Music.class);
-        assetManager.load(MyMapRender.mapGround01,Texture.class);
-        assetManager.load(MyMapRender.mapGround02,Texture.class);
-        assetManager.load(MyMapRender.mapGround03,Texture.class);
+        assetManager.load(MyMapRender.mapGround01, Texture.class);
+        assetManager.load(MyMapRender.mapGround02, Texture.class);
+        assetManager.load(MyMapRender.mapGround03, Texture.class);
         assetManager.finishLoading();
 
         background = tmxMapLoader.load(mapName);
 
 
-
-        myMapRender.init(null,this);
+        myMapRender.init(null, this);
 
     }
+
     public MyMapRender myMapRender;
 
-    public void registRender(IRender render){
-        renderMap.put(render.getClass().getSimpleName(),render);
+    public void registRender(IRender render) {
+        renderMap.put(render.getClass().getSimpleName(), render);
     }
 
-    public void registRender(String name,IRender render){
-        renderMap.put(name,render);
+    public void registRender(String name, IRender render) {
+        renderMap.put(name, render);
     }
 
     public TiledMap getBackground() {
         return background;
     }
 
-    public Texture getTexture(String textureName){
-        return assetManager.get(textureName,Texture.class);
+    public Texture getTexture(String textureName) {
+        return assetManager.get(textureName, Texture.class);
     }
 
-    public TextureRegion[][] getEnchantressAttack1(){
+    public TextureRegion[][] getEnchantressAttack1() {
         Texture texture = assetManager.get("character/Enchantress/Attack_1.png", Texture.class);
         TextureRegion[] idle = TextureRegion.split(texture, 128, 128)[0];
         resetUV(idle);
         TextureRegion[] idleMirror = TextureRegion.split(texture, 128, 128)[0];
 
-        for(TextureRegion mirror:idleMirror){
-            mirror.flip(true,false);
+        for (TextureRegion mirror : idleMirror) {
+            mirror.flip(true, false);
         }
-        return new TextureRegion[][]{idle,idleMirror};
+        return new TextureRegion[][]{idle, idleMirror};
     }
 
-    public TextureRegion[][] getEnchantressIdle(){
+    public TextureRegion profile01() {
+        // enhancer_profile.png
+        Texture texture = assetManager.get("profile/enhancer_profile.png", Texture.class);
+
+        return new TextureRegion(texture);
+    }
+
+    public TextureRegion[][] getEnchantressIdle() {
         Texture texture = assetManager.get("character/Enchantress/Idle.png", Texture.class);
         TextureRegion[] idle = TextureRegion.split(texture, 128, 128)[0];
         resetUV(idle);
         TextureRegion[] idleMirror = TextureRegion.split(texture, 128, 128)[0];
 
-        for(TextureRegion mirror:idleMirror){
-            mirror.flip(true,false);
+        for (TextureRegion mirror : idleMirror) {
+            mirror.flip(true, false);
         }
-        return new TextureRegion[][]{idle,idleMirror};
+        return new TextureRegion[][]{idle, idleMirror};
     }
 
-    public TextureRegion[][] getKnightIdle(){
+    public TextureRegion[][] getKnightIdle() {
         Texture texture = assetManager.get("character/Knight/Idle.png", Texture.class);
         TextureRegion[] idle = TextureRegion.split(texture, 128, 128)[0];
         resetUV(idle);
         TextureRegion[] idleMirror = TextureRegion.split(texture, 128, 128)[0];
 
-        for(TextureRegion mirror:idleMirror){
-            mirror.flip(true,false);
+        for (TextureRegion mirror : idleMirror) {
+            mirror.flip(true, false);
         }
-        return new TextureRegion[][]{idle,idleMirror};
+        return new TextureRegion[][]{idle, idleMirror};
     }
 
     private void resetUV(TextureRegion[] idle) {
@@ -310,15 +324,15 @@ public class MainAsset {
 //        }
     }
 
-    public TextureRegion[][] getEnchantressRun(){
+    public TextureRegion[][] getEnchantressRun() {
         Texture texture = assetManager.get("character/Enchantress/Run.png", Texture.class);
         TextureRegion[] idle = TextureRegion.split(texture, 128, 128)[0];
         TextureRegion[] idleMirror = TextureRegion.split(texture, 128, 128)[0];
 
-        for(TextureRegion mirror:idleMirror){
-            mirror.flip(true,false);
+        for (TextureRegion mirror : idleMirror) {
+            mirror.flip(true, false);
         }
-        return new TextureRegion[][]{idle,idleMirror};
+        return new TextureRegion[][]{idle, idleMirror};
     }
 
     public MapData getMapData() {
@@ -334,8 +348,9 @@ public class MainAsset {
     }
 
     GoblinRender goblinRender;
+
     public GoblinRender getGoblinRender() {
-        if (goblinRender == null){
+        if (goblinRender == null) {
             goblinRender = new GoblinRender();
         }
         return goblinRender;
@@ -351,6 +366,12 @@ public class MainAsset {
     }
 
     public Music getMusic(String s) {
-        return assetManager.get(s,Music.class);
+        return assetManager.get(s, Music.class);
+    }
+
+    GoblinBossRender goblinBossRender;
+
+    public GoblinBossRender goblinBossRender() {
+        return this.goblinBossRender;
     }
 }

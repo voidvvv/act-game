@@ -12,7 +12,7 @@ import com.mygdx.game.data.enchantress.Skill1Effect;
 import com.mygdx.game.render.character.GoblinRender;
 
 public class Goblin extends AbstractAnimation implements Pool.Poolable {
-    public static final Logger log = new Logger("Goblin",Logger.INFO);
+    public static final Logger log = new Logger("InitialState",Logger.INFO);
     public static final float MAX_DYING_TIME = 1F;
     public static final float MAX_DIED_TIME = 0.5F;
     public static float MAX_HP = 100;
@@ -33,8 +33,8 @@ public class Goblin extends AbstractAnimation implements Pool.Poolable {
     public void init(String name, float x, float y, float width, float height, float lengthZ){
         this.name = name;
         this.positionData.pos.set(x,y);
-        this.positionData.rectangle.set(width,height);
-        this.positionData.height = lengthZ;
+        this.positionData.rectangle.set(width,lengthZ);
+        this.positionData.height = height;
         camp = 1;
         stateTime = 0;
         this.status = BIRTHING;

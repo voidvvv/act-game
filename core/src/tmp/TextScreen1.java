@@ -33,6 +33,7 @@ public class TextScreen1 implements Screen {
         // append chinese characters from txt file (too many)
         apppendChineseSet(chineseChars);
         System.out.println(chineseChars);
+        parameter.size = 50;
         parameter.characters = chineseChars.toString();
         font01 = generator.generateFont(parameter);
         generator.dispose();
@@ -50,7 +51,7 @@ public class TextScreen1 implements Screen {
     }
 
     private void apppendChineseSet(StringBuilder chineseChars) {
-        FileHandle internal1 = Gdx.files.internal("font/ChineseText.txt");
+        FileHandle internal1 = Gdx.files.internal("font/ChineseText2.txt");
         Reader reader = internal1.reader();
         BufferedReader br = new BufferedReader(reader);
         String s = null;
@@ -76,7 +77,7 @@ public class TextScreen1 implements Screen {
         ScreenUtils.clear(Color.BLACK);
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
-        font01.draw(batch,"你好世界libgdx",50,200);
+        font01.draw(batch,"你libgdx",50,200);
         font02.draw(batch,"你好世界libgdx",50,250);
         batch.end();
     }

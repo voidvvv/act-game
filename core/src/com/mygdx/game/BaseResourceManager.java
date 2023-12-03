@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.assets.AssetManager;
 import com.mygdx.game.data.MapData;
 
@@ -24,6 +25,7 @@ public abstract class BaseResourceManager implements Screen {
 
     @Override
     public void render(float delta) {
+        GdxAI.getTimepiece().update(delta);
         game.update(delta);
     }
 }

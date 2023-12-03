@@ -150,6 +150,7 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
         api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
+        api "com.esotericsoftware:kryo:5.5.1-SNAPSHOT"
         
     }
 }
