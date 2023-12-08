@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.data;
 
 import com.badlogic.gdx.math.MathUtils;
 
@@ -10,6 +10,12 @@ public class FightPropData {
     public float mp = 0;
 
     public float maxMP = 0;
+
+    public float attack; // 攻击力
+    public float defence; // 防御力
+    public float magicPower;// 法术强度
+    public float magicDefence;// 法术抗性
+
 
     public void reset() {
 

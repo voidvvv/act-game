@@ -54,6 +54,7 @@ public class CharactorManager {
     }
 
     private void generateGoblin(float delta) {
+
         if (goblins.size <= 5 && goblinBirth> GOBLIN_BIRTH_INTERVAL){
             Goblin goblin = goblinPool.obtain();
             int random = MathUtils.random(goblinBirthPlace.size-1);
@@ -68,7 +69,7 @@ public class CharactorManager {
             totalGoblinCnt++;
         }
 
-        if (!bossFlag && totalGoblinCnt>=1){
+        if (!bossFlag && totalGoblinCnt>=2){
             // generate a big InitialState!
             BossGoblin boss = new BossGoblin();
             int random = MathUtils.random(goblinBirthPlace.size-1);
@@ -87,6 +88,9 @@ public class CharactorManager {
         this.two_acts.clear();
         this.one_acts.clear();
         this.zero_acts.clear();
+        this.goblins.clear();
+        bossFlag = false;
+        totalGoblinCnt = 0;
     }
     public Array<AbstractAnimation> getActs() {
         return acts;
@@ -145,6 +149,10 @@ public class CharactorManager {
     }
 
     public void resetGoblin(Goblin goblin) {
+        goblins.removeValue(goblin,true);
+    }
+
+    public void resetGoblin(BossGoblin goblin) {
         goblins.removeValue(goblin,true);
     }
 }

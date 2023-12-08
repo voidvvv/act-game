@@ -23,7 +23,7 @@ import com.mygdx.game.render.MyMapRender;
 import com.mygdx.game.render.TestRender;
 import com.mygdx.game.render.UIRender;
 
-public class ActScreen extends BaseResourceManager implements Screen {
+public class ActScreen extends BaseResourceManager{
     SpriteBatch spriteBatch;
 
     OrthographicCamera bobCamera;
@@ -58,23 +58,29 @@ public class ActScreen extends BaseResourceManager implements Screen {
 
         mapData = this.game.getMainAsset().getMapData();
         charactorManager = this.game.getMainAsset().getCharactorManager();
-        charactorManager.clearAllAct();
-        charactorManager.resetBob();
-        myBob = charactorManager.getBob();
 
-        Gdx.input.setInputProcessor(this.game.getActInputProcessor());
         music = game.getMainAsset().getMusicManager().getMusic(MusicManager.bgm_01);
 
         music.setLooping(true);
         music.setVolume(0.5f);
 //        music.play();
-        System.out.println(music.getPosition());
         gameComponentRender = MyGdxGame.getInstance().getGameComponentRender();
-        gameComponentRender.init();
 //        myLight.setColor();
         uiRender = mainAsset.getUiRender();
+
+        // init
+        init();
     }
-float t=0;
+
+    public void init() {
+        charactorManager.clearAllAct();
+        charactorManager.resetBob();
+        myBob = charactorManager.getBob();
+        gameComponentRender.init();
+        Gdx.input.setInputProcessor(this.game.getActInputProcessor());
+    }
+
+    float t=0;
 
     @Override
     public void render(float delta) {
@@ -124,7 +130,7 @@ float t=0;
 //        mapData.update(delta);
         myMapRender.act(delta);
 
-        worldCollideRender.setProjectionMatrix(bobCamera.combined);
+//        worldCollideRender.setProjectionMatrix(bobCamera.combined);
     }
 
 

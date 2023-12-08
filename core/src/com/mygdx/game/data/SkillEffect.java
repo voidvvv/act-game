@@ -5,8 +5,10 @@ import com.mygdx.game.data.charact.AbstractAnimation;
 
 public interface SkillEffect extends Pool.Poolable{
 
-    int type();
+    int type(); // 物理攻击  魔法攻击 .. 等等
     public abstract AbstractAnimation getAct();
 
     void end();
+
+
 }

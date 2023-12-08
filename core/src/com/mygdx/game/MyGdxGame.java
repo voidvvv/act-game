@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,6 +24,8 @@ public class MyGdxGame extends Game {
 	private MainAsset mainAsset;
 	private BatchManager batchManager;
 	ActInputProcessor actInputProcessor;
+
+	public boolean fail = false;
 
 	DataManager dataManager;
 	public static MyGdxGame getInstance(){
@@ -113,6 +116,18 @@ public class MyGdxGame extends Game {
 	}
 
 	public void update(float delta) {
-		getMainAsset().getCharactorManager().update(delta);
+		if (!fail){
+			MyGdxGame.getInstance().getMainAsset().getCharactorManager().update(delta);
+		}
+	}
+
+	public void tryToResetGame() {
+		if (fail){
+			Screen screen1 = getScreen();
+			if (screen1 == actScreen){
+				actScreen.init();
+				fail = false;
+			}
+		}
 	}
 }

@@ -1,12 +1,8 @@
 package com.mygdx.game.data.charact;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
-import com.mygdx.game.FightPropData;
 import com.mygdx.game.MyGdxGame;
-import com.mygdx.game.data.MapData;
-import com.mygdx.game.data.PositionData;
 import com.mygdx.game.data.SkillEffect;
 import com.mygdx.game.data.enchantress.Skill1Effect;
 import com.mygdx.game.render.character.GoblinRender;

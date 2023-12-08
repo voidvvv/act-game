@@ -1,7 +1,7 @@
 package com.mygdx.game.data.charact;
 
 import com.badlogic.gdx.utils.Logger;
-import com.mygdx.game.FightPropData;
+import com.mygdx.game.data.FightPropData;
 import com.mygdx.game.KeyRenderUpdater;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.NameAdaptor;
@@ -9,7 +9,6 @@ import com.mygdx.game.data.PositionData;
 import com.mygdx.game.data.SkillEffect;
 import com.mygdx.game.data.enchantress.Skill1Effect;
 
-import java.util.Arrays;
 import java.util.Comparator;
 
 public abstract class AbstractAnimation  implements KeyRenderUpdater, NameAdaptor {
@@ -66,6 +65,10 @@ public abstract class AbstractAnimation  implements KeyRenderUpdater, NameAdapto
 
     public boolean died() {
         return false;
+    }
+
+    public void beforeDied(){
+        // do something
     }
 
     public static class ActCompare implements Comparator<AbstractAnimation>{

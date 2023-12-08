@@ -1,5 +1,7 @@
 package com.mygdx.game.data.enchantress;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
@@ -115,7 +117,16 @@ public class Skill1Effect implements SkillEffect, KeyRenderUpdater, Pool.Poolabl
     }
 
     private float calculateDamage(AbstractAnimation act) {
-        return 10;
+        FightPropData fightPropData = this.bob.fightProp();
+        FightPropData fightPropData1 = act.fightProp();
+
+        float attack = fightPropData.attack;
+        float defence = fightPropData1.defence;
+
+        float stand = attack * (100 / (100 + defence));
+
+//        log.info(String.format(" stand : %s , rand: %s",stand,rand));
+        return MathUtils.random(stand*0.9f,stand*1.1f);
     }
 
     @Override

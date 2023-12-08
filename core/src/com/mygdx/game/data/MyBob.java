@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.mygdx.game.FightPropData;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.charact.AbstractAnimation;
 import com.mygdx.game.data.enchantress.Skill1;
@@ -62,7 +61,8 @@ public class MyBob extends AbstractAnimation {
         positionData.rectangle.y = boxY;
         positionData.height = height;
         this.skills.add(new Skill1(Skill1.MAX_DURATION, this));
-
+        fightPropData.init(50,50);
+        fightPropData.attack = 59;
 
     }
 

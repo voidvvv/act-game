@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.manage.CameraManager;
 import com.mygdx.game.manage.TextManager;
+import com.mygdx.game.myg2d.MyG2DUtil;
 
 public class UIRender {
     BitmapFont baseFont;
@@ -28,17 +29,26 @@ public class UIRender {
         textManager = MyGdxGame.getInstance().getMainAsset().getTextRender();
         profile01 = MyGdxGame.getInstance().getMainAsset().profile01();
 
-
+        bg.a = 0.35f;
     }
-
+    Color bg = Color.WHITE.cpy();
     public void render(){
-//        textManager.begin();
-//
-//        textManager.render("这是默认中文abc,.;",400,350,screenCamera,140);
-//        textManager.end();
+
 
         renderProfile();
+        if (MyGdxGame.getInstance().fail){
+            MyG2DUtil.openBlender();
+            float screenWidth = cameraManager.screenWidth;
+            float screenHeight = cameraManager.screenHeight;
 
+            lineShapeRender.begin();
+            lineShapeRender.setColor(bg);
+            lineShapeRender.setProjectionMatrix(screenCamera.combined);
+            lineShapeRender.set(ShapeRenderer.ShapeType.Filled);
+            lineShapeRender.rect(0,0,screenWidth,screenHeight);
+            lineShapeRender.end();
+            MyG2DUtil.closeBlender();
+        }
     }
 
     private void renderProfile() {

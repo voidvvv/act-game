@@ -16,6 +16,8 @@ public abstract class BaseResourceManager implements Screen {
         // test www
     }
 
+    abstract public void init();
+
     @Override
     public void show() {
         game = MyGdxGame.getInstance();
@@ -25,7 +27,7 @@ public abstract class BaseResourceManager implements Screen {
 
     @Override
     public void render(float delta) {
-        GdxAI.getTimepiece().update(delta);
+//        GdxAI.getTimepiece().update(delta);
         game.update(delta);
     }
 }

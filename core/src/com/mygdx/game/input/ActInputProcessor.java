@@ -37,6 +37,7 @@ public class ActInputProcessor extends InputAdapter {
         }
         if (keycode == Input.Keys.SPACE){
             mapData.mapLightFlag = !mapData.mapLightFlag;
+            MyGdxGame.getInstance().tryToResetGame();
         }
         return false;
     }
