@@ -5,10 +5,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.mygdx.game.MyGdxGame;
 import tmp.TmpGame;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

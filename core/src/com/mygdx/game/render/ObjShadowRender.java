@@ -24,6 +24,7 @@ public class ObjShadowRender {
     }
 
     public void init(){
+
         mesh = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.ColorUnpacked(), VertexAttribute.TexCoords(0));
 //        mesh.setVertices(new float[] {
 //                shadowBox[0], shadowBox[1], -0.5f, color.r,color.g,color.b,color.a, 0, 1,
@@ -36,7 +37,10 @@ public class ObjShadowRender {
         mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 
         shaderProgram = new ShaderProgram(Gdx.files.internal("shader/tmp.vert"),Gdx.files.internal("shader/shadow_normal.frag"));
-
+        if(!shaderProgram.isCompiled()){
+            String log = shaderProgram.getLog();
+            System.out.println("shader:   error:   "+log);
+        }
     }
 
 

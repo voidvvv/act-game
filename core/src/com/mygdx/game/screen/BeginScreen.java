@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.KeyRenderUpdater;
 import com.mygdx.game.MyGdxGame;
@@ -15,6 +16,9 @@ public class BeginScreen implements Screen, KeyRenderUpdater {
     OrthographicCamera camera;
     SpriteBatch spriteBatch;
     BitmapFont font;
+    public static final Logger log = new Logger("beginScreen");
+
+    float time;
     @Override
     public void show() {
         camera = new OrthographicCamera();
@@ -57,8 +61,16 @@ public class BeginScreen implements Screen, KeyRenderUpdater {
 
     @Override
     public void update(float delta) {
+        log.info("update  ! begin Screen");
+        time+=delta;
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            log.info("!!!!");
             MyGdxGame.getGame().setGameScreen();
+        }else if (time > 1f){
+            if (Gdx.input.isTouched()){
+                log.info("!!!!");
+                MyGdxGame.getGame().setGameScreen();
+            }
         }
     }
 

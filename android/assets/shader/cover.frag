@@ -10,11 +10,11 @@ uniform float    maxRange;
 varying vec4 v_position;
 varying vec4 v_color;
 
-void main( out vec4 fragColor  ) {
-    fragColor = coverColor;
+void main(  ) {
+    gl_FragColor = coverColor;
     if(lightFlag>1){
         float s = smoothstep(minRange,maxRange,length(v_position.xy-u_light_position));
-        fragColor*=s;
+        gl_FragColor*=s;
     }
 
 }
