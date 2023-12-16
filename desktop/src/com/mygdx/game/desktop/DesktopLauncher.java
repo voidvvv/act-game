@@ -15,6 +15,7 @@ public class DesktopLauncher {
 		config.width = 640;
 		config.height = 480;
 		new LwjglApplication(MyGdxGame.getInstance(), config);
+		// pad test
 //		new LwjglApplication(new TmpGame(),config);
 	}
 
