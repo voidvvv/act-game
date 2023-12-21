@@ -123,15 +123,6 @@ public class MyMapRender {
 
     }
 
-    private void drawOrigiPoint() {
-        CharactorManager charactorManager = MyGdxGame.getInstance().getMainAsset().getCharactorManager();
-        AbstractAnimation myBob = charactorManager.getBob();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.circle(myBob.pos().pos.x, myBob.pos().pos.y,3);
-        shapeRenderer.end();
-    }
-
     private void renderCharacter() {
         CharactorManager charactorManager = MyGdxGame.getInstance().getMainAsset().getCharactorManager();
         for(int x=0; x< charactorManager.getActs().size; x++){
@@ -139,21 +130,6 @@ public class MyMapRender {
             anim.render();
         }
     }
-
-    public static void main(String[] args) {
-        Array<String> array = new Array();
-        array.add("aa");
-        array.add("bb");
-
-        for (String s :array){
-            System.out.println(s);
-        }
-
-        for (String s :array){
-            System.out.println(s);
-        }
-    }
-
 
     public void draw() {
         render();

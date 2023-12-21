@@ -1,12 +1,9 @@
 package com.mygdx.game.data.charact;
 
 import com.badlogic.gdx.utils.Logger;
-import com.mygdx.game.data.FightPropData;
+import com.mygdx.game.data.*;
 import com.mygdx.game.KeyRenderUpdater;
 import com.mygdx.game.MyGdxGame;
-import com.mygdx.game.data.NameAdaptor;
-import com.mygdx.game.data.PositionData;
-import com.mygdx.game.data.SkillEffect;
 import com.mygdx.game.data.enchantress.Skill1Effect;
 
 import java.util.Comparator;
@@ -75,6 +72,23 @@ public abstract class AbstractAnimation  implements KeyRenderUpdater, NameAdapto
         @Override
         public int compare(AbstractAnimation o1, AbstractAnimation o2) {
             return (int) o2.pos().pos.y - (int)o1.pos().pos.y;
+        }
+    }
+
+    protected void fixPosition() {
+        MapData mapData = MyGdxGame.getGame().getMainAsset().getMapData();
+        float width = mapData.width;
+        float height = mapData.height;
+        if (this.pos().pos.x < this.pos().rectangle.x / 2) {
+            this.pos().pos.x = this.pos().rectangle.x / 2;
+        } else if (this.pos().pos.x > width - this.pos().rectangle.x / 2) {
+            this.pos().pos.x = width - this.pos().rectangle.x / 2;
+        }
+
+        if (this.pos().pos.y < 0) {
+            this.pos().pos.y = 0;
+        } else if (this.pos().pos.y > height - this.pos().rectangle.y) {
+            this.pos().pos.y = height - this.pos().rectangle.y;
         }
     }
 }

@@ -80,7 +80,7 @@ public class MyBob extends AbstractAnimation {
         checkSkill0(delta);
 
         pos().update(delta);
-        fixBobPosition();
+        fixPosition();
     }
 
     private void checkSkill0(float delta) {
@@ -126,22 +126,7 @@ public class MyBob extends AbstractAnimation {
         }
     }
 
-    private void fixBobPosition() {
-        MapData mapData = MyGdxGame.getGame().getMainAsset().getMapData();
-        float width = mapData.width;
-        float height = mapData.height;
-        if (this.pos().pos.x < this.pos().rectangle.x / 2) {
-            this.pos().pos.x = this.pos().rectangle.x / 2;
-        } else if (this.pos().pos.x > width - this.pos().rectangle.x / 2) {
-            this.pos().pos.x = width - this.pos().rectangle.x / 2;
-        }
 
-        if (this.pos().pos.y < 0) {
-            this.pos().pos.y = 0;
-        } else if (this.pos().pos.y > height - this.pos().rectangle.y) {
-            this.pos().pos.y = height - this.pos().rectangle.y;
-        }
-    }
 
     @Override
     public void render() {

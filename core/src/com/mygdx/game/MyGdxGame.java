@@ -32,6 +32,7 @@ public class MyGdxGame extends Game {
 		if (game == null){
 			game = new MyGdxGame();
 		}
+
 		return game;
 	}
 	private MyGdxGame() {
