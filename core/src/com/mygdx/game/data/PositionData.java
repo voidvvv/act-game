@@ -27,6 +27,8 @@ public class PositionData {
     private final Rectangle rectangleShape = new Rectangle();
     // 人物水平方位的矩形。可以理解为胖瘦,前凸后翘
     private final Rectangle rectangleShapeZ = new Rectangle();
+
+    public Vector3 vel = new Vector3();
     public void update(float delta){
         posCenter.set(pos.x,pos.y+height/2);
     }

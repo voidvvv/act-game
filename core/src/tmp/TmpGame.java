@@ -13,6 +13,6 @@ public class TmpGame extends Game {
         tmpScreen = new TmpScreen();
         twoScreen = new TwoScreen();
         textScreen1 = new TextScreen1();
-        setScreen(textScreen1);
+        setScreen(twoScreen);
     }
 }

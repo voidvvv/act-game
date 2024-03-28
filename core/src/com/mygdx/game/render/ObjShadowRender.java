@@ -45,7 +45,7 @@ public class ObjShadowRender {
 
 
     public void renderShadow(Color color, float[] shadowBox, Matrix4 matrix4, TextureRegion tr){
-//        tr.getTexture().bind();
+        tr.getTexture().bind();
         shaderProgram.bind();
 //
         int index = 0;

@@ -2,6 +2,9 @@ buildscript {
 
 
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url "https://maven.aliyun.com/nexus/content/groups/public" }
+        maven { url "https://maven.aliyun.com/nexus/content/repositories/jcenter" }
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
@@ -31,6 +34,9 @@ allprojects {
     }
 
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url "https://maven.aliyun.com/nexus/content/groups/public" }
+        maven { url "https://maven.aliyun.com/nexus/content/repositories/jcenter" }
         mavenLocal()
         mavenCentral()
         google()

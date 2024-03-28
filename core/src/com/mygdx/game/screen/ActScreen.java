@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -77,7 +78,9 @@ public class ActScreen extends BaseResourceManager{
         charactorManager.resetBob();
         myBob = charactorManager.getBob();
         gameComponentRender.init();
-        Gdx.input.setInputProcessor(this.game.getActInputProcessor());
+//        Gdx.input.setInputProcessor(this.game.getActInputProcessor());
+        CameraInputController cameraInputController = new CameraInputController(bobCamera);
+        Gdx.input.setInputProcessor(cameraInputController);
     }
 
     float t=0;

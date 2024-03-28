@@ -2,6 +2,7 @@ package com.mygdx.game.data;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.mygdx.game.MyGdxGame;
@@ -42,7 +43,7 @@ public class MyBob extends AbstractAnimation {
 
 //    public
 
-    public Vector2 vel = new Vector2();
+    
 
     public float stateTime = 0;
 
@@ -73,9 +74,9 @@ public class MyBob extends AbstractAnimation {
         checkButton();
         updateDirection(delta);
         if (status == STATUS_RUN) {
-            vel.scl(delta);
+            positionData.vel.scl(delta);
             move();
-            vel.scl(1.0f / delta);
+            positionData.vel.scl(1.0f / delta);
         }
         checkSkill0(delta);
 
@@ -150,10 +151,10 @@ public class MyBob extends AbstractAnimation {
 
     private void move() {
         if (status == STATUS_RUN) {
-            if (mod == MOD_STATUS_MOUSE && positionData.pos.dst(target) <= positionData.pos.dst(tmpTarget.set(positionData.pos.x + vel.x, positionData.pos.y + vel.y))) {
+            if (mod == MOD_STATUS_MOUSE && positionData.pos.dst(target) <= positionData.pos.dst(tmpTarget.set(positionData.pos.x + positionData.vel.x, positionData.pos.y + positionData.vel.y))) {
                 positionData.pos.set(target);
             } else {
-                positionData.pos.add(vel.x, vel.y);
+                positionData.pos.add(positionData.vel.x, positionData.vel.y);
             }
             reset();
         }
@@ -183,7 +184,7 @@ public class MyBob extends AbstractAnimation {
         mod = MOD_STATUS_KEY;
         if (flag) {
 //            resetDirect();
-            vel.y = defaultVelDirect;
+            positionData.vel.y = defaultVelDirect;
             setdirect(DIRECT_UP, 0);
             makeBobRun();
         } else {
@@ -191,7 +192,7 @@ public class MyBob extends AbstractAnimation {
             if ((direct & DIRECT_DOWN) > 0) {
                 bobDown(true);
             } else {
-                vel.y = 0;
+                positionData.vel.y = 0;
                 makeBobIdol();
             }
         }
@@ -231,7 +232,7 @@ public class MyBob extends AbstractAnimation {
         mod = MOD_STATUS_KEY;
         if (flag) {
 //            resetDirect();
-            vel.y = -defaultVelDirect;
+            positionData.vel.y = -defaultVelDirect;
             setdirect(DIRECT_DOWN, 0);
             makeBobRun();
         } else {
@@ -240,7 +241,7 @@ public class MyBob extends AbstractAnimation {
             if ((direct & DIRECT_UP) > 0) {
                 bobUp(true);
             } else {
-                vel.y = 0;
+                positionData.vel.y = 0;
                 makeBobIdol();
             }
         }
@@ -248,7 +249,7 @@ public class MyBob extends AbstractAnimation {
 
     public void makeBobIdol() {
 
-        if (MathUtils.isZero(vel.x) && MathUtils.isZero(vel.y)) {
+        if (MathUtils.isZero(positionData.vel.x) && MathUtils.isZero(positionData.vel.y)) {
             status = STATUS_IDOL;
             stateTime = 0;
         }
@@ -258,7 +259,7 @@ public class MyBob extends AbstractAnimation {
     public void makeIdolForce() {
         status = STATUS_IDOL;
         stateTime = 0;
-        vel.setZero();
+        positionData.vel.setZero();
 
     }
 
@@ -273,7 +274,7 @@ public class MyBob extends AbstractAnimation {
         mod = MOD_STATUS_KEY;
         if (flag) {
             resetDirect();
-            vel.x = defaultVelHorizon;
+            positionData.vel.x = defaultVelHorizon;
             setdirect(DIRECT_RIGHT, 0);
 //            System.out.println("bobRight!");
             makeBobRun();
@@ -285,7 +286,7 @@ public class MyBob extends AbstractAnimation {
 
                 bobLeft(true);
             } else {
-                vel.x = 0f;
+                positionData.vel.x = 0f;
                 makeBobIdol();
             }
             System.out.println("key release right : " + direct);
@@ -302,8 +303,8 @@ public class MyBob extends AbstractAnimation {
             status = STATUS_RUN;
 
             setdirect(positionData.pos, localCenterToWorld(target));
-            vel.x = defaultVelHorizon * this.positionData.directVect.x;
-            vel.y = defaultVelDirect * this.positionData.directVect.y;
+            positionData.vel.x = defaultVelHorizon * this.positionData.directVect.x;
+            positionData.vel.y = defaultVelDirect * this.positionData.directVect.y;
         }
 
     }
@@ -312,7 +313,7 @@ public class MyBob extends AbstractAnimation {
         mod = MOD_STATUS_KEY;
         if (flag) {
             resetDirect();
-            vel.x = -defaultVelHorizon;
+            positionData.vel.x = -defaultVelHorizon;
             setdirect(DIRECT_LEFT, 0);
             System.out.println("key down left : " + direct);
             makeBobRun();
@@ -321,7 +322,7 @@ public class MyBob extends AbstractAnimation {
             if ((direct & DIRECT_RIGHT) > 0) {
                 bobRight(true);
             } else {
-                vel.x = 0f;
+                positionData.vel.x = 0f;
                 makeBobIdol();
             }
             System.out.println("key release left : " + direct);

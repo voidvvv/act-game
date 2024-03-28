@@ -10,6 +10,8 @@ import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.data.MapData;
 import com.mygdx.game.data.charact.AbstractAnimation;
 
+import java.util.Comparator;
+
 public class CameraManager {
     public float screenWidth;
     public float screenHeight;
@@ -45,16 +47,18 @@ public class CameraManager {
     }
 
     public void update(float delta){
-        CharactorManager charactorManager = MyGdxGame.getGame().getMainAsset().getCharactorManager();
-        AbstractAnimation myBob = charactorManager.getBob();
-        lerpTarget.set(myBob.pos().posCenter,0);
-//        bobCamera.project(lerpTarget);
-        bobCamera.position.lerp(lerpTarget,2.5f*delta);
-        fixCameraPosition();
-        bobCamera.update();
+//        CharactorManager charactorManager = MyGdxGame.getGame().getMainAsset().getCharactorManager();
+//        AbstractAnimation myBob = charactorManager.getBob();
+//        lerpTarget.set(myBob.pos().posCenter,0);
+////        bobCamera.project(lerpTarget);
+//        bobCamera.position.lerp(lerpTarget,2.5f*delta);
+//        fixCameraPosition();
+//        bobCamera.update();
     }
 
     private void fixCameraPosition() {
+
+
         MapData mapData = MyGdxGame.getGame().getMainAsset().getMapData();
         if (bobCamera.position.x<bobCamera.viewportWidth/2){
             bobCamera.position.x =bobCamera.viewportWidth/2;

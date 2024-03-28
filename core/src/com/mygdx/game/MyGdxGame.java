@@ -65,6 +65,7 @@ public class MyGdxGame extends Game {
 		actInputProcessor = new ActInputProcessor(mainAsset);
 		dataManager = new DataManager();
 		gameComponentRender = new GameComponentRender();
+		Gdx.input.setCursorCatched(true);
 //		Gdx.input.setInputProcessor(actInputProcessor);
 
 
