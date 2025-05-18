@@ -25,7 +25,8 @@ public class ObjShadowRender {
 
     public void init(){
 
-        mesh = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.ColorUnpacked(), VertexAttribute.TexCoords(0));
+        mesh = new Mesh(true, 1024, // 顶点数量，1就是vertices中只能存在一个顶点，无法构图，最少要3个，为了缓存可以多设置一些
+                6, VertexAttribute.Position(), VertexAttribute.ColorUnpacked(), VertexAttribute.TexCoords(0));
 //        mesh.setVertices(new float[] {
 //                shadowBox[0], shadowBox[1], -0.5f, color.r,color.g,color.b,color.a, 0, 1,
 //                shadowBox[0]+shadowBox[2], shadowBox[1], -0.5f,color.r,color.g,color.b,color.a,1, 1,
@@ -90,9 +91,10 @@ public class ObjShadowRender {
         vertices[index++] = color.b;
         vertices[index++] = color.a;
 
-        vertices[index++] = 0;
-        vertices[index++] = 0;
+//        vertices[index++] = 0;
+//        vertices[index++] = 0;
         shaderProgram.setUniformMatrix("u_projTrans",matrix4);
+//        shaderProgram.setUniform4fv();
 //        shaderProgram.setUniformi("u_texture",0);
         mesh.setVertices(vertices,0,index);
 

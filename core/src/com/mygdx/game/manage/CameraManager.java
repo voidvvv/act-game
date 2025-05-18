@@ -47,13 +47,13 @@ public class CameraManager {
     }
 
     public void update(float delta){
-//        CharactorManager charactorManager = MyGdxGame.getGame().getMainAsset().getCharactorManager();
-//        AbstractAnimation myBob = charactorManager.getBob();
-//        lerpTarget.set(myBob.pos().posCenter,0);
-////        bobCamera.project(lerpTarget);
-//        bobCamera.position.lerp(lerpTarget,2.5f*delta);
-//        fixCameraPosition();
-//        bobCamera.update();
+        CharactorManager charactorManager = MyGdxGame.getGame().getMainAsset().getCharactorManager();
+        AbstractAnimation myBob = charactorManager.getBob();
+        lerpTarget.set(myBob.pos().posCenter,0);
+//        bobCamera.project(lerpTarget);
+        bobCamera.position.lerp(lerpTarget,2.5f*delta);
+        fixCameraPosition();
+        bobCamera.update();
     }
 
     private void fixCameraPosition() {

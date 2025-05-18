@@ -15,7 +15,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.mygdx.game.data.MyBob;
 import com.mygdx.game.data.MapData;
@@ -106,6 +108,7 @@ public class MainAsset {
 //        assetManager.finishLoading();
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/song_01.ttf"));
+
         // C:\Windows\Fonts\BASKVILL.TTF
 //        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.absolute("C:\\Windows\\Fonts\\simsunb.ttf"));
 
@@ -252,6 +255,8 @@ public class MainAsset {
 
         background = tmxMapLoader.load(mapName);
 
+        MapLayer mapLayer = background.getLayers().get(0);
+        TiledMapTileLayer t = (TiledMapTileLayer)mapLayer;
 
         myMapRender.init(null, this);
 

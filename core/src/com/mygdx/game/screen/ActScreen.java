@@ -78,9 +78,9 @@ public class ActScreen extends BaseResourceManager{
         charactorManager.resetBob();
         myBob = charactorManager.getBob();
         gameComponentRender.init();
-//        Gdx.input.setInputProcessor(this.game.getActInputProcessor());
-        CameraInputController cameraInputController = new CameraInputController(bobCamera);
-        Gdx.input.setInputProcessor(cameraInputController);
+        Gdx.input.setInputProcessor(this.game.getActInputProcessor());
+//        CameraInputController cameraInputController = new CameraInputController(bobCamera);
+//        Gdx.input.setInputProcessor(cameraInputController);
     }
 
     float t=0;

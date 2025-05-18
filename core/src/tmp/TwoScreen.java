@@ -75,18 +75,18 @@ public class TwoScreen implements Screen {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 //        ScreenViewport
-//        swordmanRender.render();
+        swordmanRender.render();
 //        model.calculateTransforms();
-        modelBatch.begin(cam);
-
-//        modelBatch.getRenderContext().setDepthTest();
-        instance.transform.rotate(rov.set(1f,0f,0f),0.2f);
-//        modelBatch.render(instance,environment);
-        modelBatch.render(arrowInstance,environment);
-        modelBatch.end();
-        Matrix4 m4 = new Matrix4();
-
-//        m4.mulLeft()
+//        modelBatch.begin(cam);
+//
+////        modelBatch.getRenderContext().setDepthTest();
+//        instance.transform.rotate(rov.set(1f,0f,0f),0.2f);
+////        modelBatch.render(instance,environment);
+//        modelBatch.render(arrowInstance,environment);
+//        modelBatch.end();
+//        Matrix4 m4 = new Matrix4();
+//
+////        m4.mulLeft()
         update(delta);
     }
 
